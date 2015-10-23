@@ -12,3 +12,6 @@ target/
 
 # User database file
 conf/userdata.xml
+
+# Log files
+logs/
