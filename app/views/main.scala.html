@@ -1,0 +1,75 @@
+@(title: String = "Welcome", nav: String = "")(content: Html)
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>RuFan</title>
+    <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/bootstrap.css")">
+    <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+    <script src="@routes.Assets.versioned("javascripts/jquery-1.9.0.min.js")" type="text/javascript"></script>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="@routes.Application.index()">RuFan</a>
+        </div>
+        <div>
+          <ul class="nav navbar-nav">
+          @if(session.get("username")) {
+            <li>
+              <a href="TODO">Tournaments</a>
+            </li>
+            <li>
+              <a href="TODO">Profile</a>
+            </li>
+            <li>
+              <a href="TODO">Wallet</a>
+            </li>
+            <li>
+              <a href="@routes.LoginController.logout()">Logout</a>
+            </li>
+          } else {
+            <li class="@("active".when(nav == "signup"))">
+              <a href="@routes.SignupController.blank()">Sign up</a>
+            </li>
+            <li class="@("active".when(nav == "login"))">
+              <a href="@routes.LoginController.blank()">Login</a>
+            </li>
+          }
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+
+    <div class="container">
+
+      <div class="content">
+
+        <div class="page-header">
+          <h1>@title</h1>
+        </div>
+
+        <div class="row">
+          <div class="span14">
+          @content
+          </div>
+        </div>
+
+      </div>
+
+      <footer>
+        <p></p>
+        <p>
+          FuFan Best Daily Fantasy Sport Service in the world
+        </p>
+      </footer>
+
+    </div>
+
+  </body>
+</html>

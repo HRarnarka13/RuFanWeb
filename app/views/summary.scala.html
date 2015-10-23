@@ -1,0 +1,8 @@
+@(user: is.rufan.user.domain.User)
+
+@main("Account created!", nav = "signup") {
+
+    <h2>Your account:</h2>
+    <p>Name: @user.getUsername()</p>
+
+}
