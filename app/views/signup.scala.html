@@ -1,4 +1,4 @@
-@(signupForm: Form[is.rufan.user.domain.UserRegistration])
+@(signupForm: Form[is.rufan.user.domain.UserRegistration], teams: List[is.rufan.team.domain.Team])
 
 @import helper._
 
@@ -34,6 +34,12 @@
                 '_help -> "Please repeat your password again.",
                 '_error -> signupForm.globalError
             )
+            <select class="fav_team" name="fav_team">
+                @for(team <- teams) {
+                    <option value="@team.getTeamId">@team.getDisplayName - @team.getAbbreviation</option>
+                }
+            </select>
+
         </fieldset>
         <fieldset>
         @checkbox(
