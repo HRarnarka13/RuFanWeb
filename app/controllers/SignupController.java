@@ -10,18 +10,13 @@ import play.data.*;
 import views.html.signup;
 import views.html.summary;
 
-
-import java.util.List;
-
 import static play.data.Form.*;
 
 
-public class SignupController extends UserController
-{
+public class SignupController extends UserController {
     final static Form<UserRegistration> signupForm = form(UserRegistration.class);
 
-    public Result blank()
-    {
+    public Result blank() {
         TeamService teamService = (TeamService) ctx.getBean("teamService");
         return ok(signup.render(signupForm, teamService.getTeams()));
     }
@@ -53,14 +48,16 @@ public class SignupController extends UserController
             filledForm.reject("password", "The password is too short");
         }
 
-        // System.out.println(filledForm.field("fav_team").value());
-
         if (filledForm.hasErrors()) {
             return badRequest(signup.render(filledForm, teamService.getTeams()));
         } else {
             UserRegistration created = filledForm.get();
             service.addUser(created);
-            return ok(summary.render(created));
+
+
+            // Get user favorite team
+            Team fav_team = teamService.getTeamByAbbrivation(created.getFav_teamabb());
+            return ok(summary.render(created, fav_team, teamService.getTeams()));
         }
     }
 }
