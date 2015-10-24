@@ -12,7 +12,8 @@ GET         /logout              controllers.LoginController.logout()
 
 
 # User
-GET         /profile            controllers.UserController.blank()
+GET         /profile             controllers.UserController.blank()
+PUT         /profile             controllers.UserController.updateUser()
 
 
 

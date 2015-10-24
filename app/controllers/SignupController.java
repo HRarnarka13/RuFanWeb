@@ -13,7 +13,7 @@ import views.html.summary;
 import static play.data.Form.*;
 
 
-public class SignupController extends UserController {
+public class SignupController extends AccountController {
     final static Form<UserRegistration> signupForm = form(UserRegistration.class);
 
     public Result blank() {

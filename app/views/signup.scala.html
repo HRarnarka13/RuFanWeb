@@ -35,6 +35,7 @@
                 '_error -> signupForm.globalError
             )
             <select class="fav_team" name="fav_team">
+                <option value="">Select a team</option>
                 @for(team <- teams) {
                     <option value="@team.getAbbreviation">@team.getDisplayName</option>
                 }

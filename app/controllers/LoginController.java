@@ -12,7 +12,7 @@ import static play.data.Form.form;
 import views.html.index;
 import views.html.login;
 
-public class LoginController extends UserController
+public class LoginController extends AccountController
 {
   final static Form<User> loginForm = form(User.class);
 

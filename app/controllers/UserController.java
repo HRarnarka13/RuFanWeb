@@ -27,16 +27,24 @@ public class UserController extends Controller
         UserService userService = (UserService) ctx.getBean("userService");
         TeamService teamService = (TeamService) ctx.getBean("teamService");
 
+        // Get the user who is logged in.
         User user = userService.getUserByUsername(session().get("username"));
 
         if (user == null) {
-
             return ok(login.render(loginForm));
         }
 
+        // Get users favorite team.
+        //
         Team team = teamService.getTeamByAbbrivation(user.getFav_teamabb());
-
         return ok(summary.render(user, team, teamService.getTeams()));
+    }
+
+    public Result updateUser() {
+
+        TeamService teamService = (TeamService) ctx.getBean("teamService");
+
+        return ok (summary.render(new User(), new Team(), teamService.getTeams()));
     }
 
 }
