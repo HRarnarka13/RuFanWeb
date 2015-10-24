@@ -1,0 +1,27 @@
+@(user: is.rufan.user.domain.User, fav_team: is.rufan.team.domain.Team, teams: List[is.rufan.team.domain.Team])
+
+@main("Hello " + user.getName(), nav = "signup") {
+
+  <h2>Your account:</h2>
+  <p>Name: @user.getName()</p>
+  <p>Username: @user.getUsername()</p>
+  <p>Email: @user.getEmail()</p>
+  <p>Favorite team: @if(fav_team.!=(null)) { @fav_team.getDisplayName() } else { No team } </p>
+
+  @helper.form(action = routes.UserController.updateUser()) {
+    <fieldset>
+      <legend>Update favorite team</legend>
+      <select class="fav_team" name="fav_team">
+        <option value="">Select a team</option>
+        @for(team <- teams) {
+          <option value="@team.getAbbreviation">@team.getDisplayName</option>
+        }
+      </select>
+    </fieldset>
+
+    <div class="actions">
+      <input type="submit" class="btn primary" value="Login">
+      <a href="@routes.Application.index" class="btn">Cancel</a>
+    </div>
+  }
+}
