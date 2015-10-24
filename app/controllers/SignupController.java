@@ -47,6 +47,9 @@ public class SignupController extends AccountController {
             filledForm.reject("password", "The password is too short");
         }
 
+        // TODO: Validate Credit card information
+
+
         if (filledForm.hasErrors()) {
             return badRequest(signup.render(filledForm, teamService.getTeams()));
         } else {
