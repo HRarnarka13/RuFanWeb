@@ -1,12 +1,22 @@
 @(user: is.rufan.user.domain.User, fav_team: is.rufan.team.domain.Team, teams: List[is.rufan.team.domain.Team])
 
-@main("Hello " + user.getName(), nav = "signup") {
+@main("Hello " + user.getName(), nav = "profile") {
 
   <h2>Your account:</h2>
-  <p>Name: @user.getName()</p>
-  <p>Username: @user.getUsername()</p>
-  <p>Email: @user.getEmail()</p>
-  <p>Favorite team: @if(fav_team.!=(null)) { @fav_team.getDisplayName() } else { No team } </p>
+  <dl class="dl-horizontal">
+    <dt>Name:</dt>
+    <dd>@user.getName()</dd>
+    <dt>Username:</dt>
+    <dd>@user.getUsername()<dd>
+    <dt>Email:</dt>
+    <dd>@user.getEmail()</dd>
+
+    <dt>Favorite team:</dt>
+    <dd>@if(fav_team.!=(null)) { @fav_team.getDisplayName() } else { No team }</dd>
+
+    <dt>Credit card:</dt>
+    <dd>@user.getCredit_card_type() - @user.getCredit_card_number()</dd>
+  </dl>
 
   @helper.form(action = routes.UserController.updateUser()) {
     <fieldset>

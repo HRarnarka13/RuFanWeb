@@ -34,12 +34,46 @@
                 '_help -> "Please repeat your password again.",
                 '_error -> signupForm.globalError
             )
-            <select class="fav_team" name="fav_team">
-                <option value="">Select a team</option>
-                @for(team <- teams) {
-                    <option value="@team.getAbbreviation">@team.getDisplayName</option>
-                }
-            </select>
+
+            @select(
+                signupForm("fav_teamabb"),
+                teams.map(team => team.getAbbreviation -> team.getDisplayName),
+                '_default -> "-- Choose a Team --",
+                '_label -> "Favorite team",
+                '_help -> "Please select your favorite team"
+            )
+
+            @inputRadioGroup(
+                signupForm("credit_card_type"),
+                options = Seq("Visa"->"Visa", "Mastercard"->"Mastercard"),
+                '_label -> "Credit Card Type",
+                '_help -> "Please select credit card type."
+            )
+
+            @inputText(
+                signupForm("credit_card_number"),
+                '_label -> "Credit Card Number",
+                '_help -> "A Credit Card number must be 16 digits."
+            )
+            <dl class="">
+                <dt>
+                    <label for="credit_card_exp_date">Credit Card expiration date</label>
+                </dt>
+                <dd>
+                    <select name="credit_card_exp_date_month">
+                    @for(i <- 1 to 12) {
+                        <option value="@i">@i</option>
+                    }
+                    </select>
+                    <select name="credit_card_exp_date_year">
+                    @for(i <- 2015 to 2025) {
+                        <option value="@i">@i</option>
+                    }
+                    </select>
+                </dd>
+            </dl>
+
+
 
         </fieldset>
         <fieldset>

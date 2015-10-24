@@ -20,7 +20,7 @@ import static play.data.Form.form;
 public class UserController extends Controller
 {
     protected ApplicationContext ctx = new FileSystemXmlApplicationContext("/conf/userapp.xml");
-    final static Form<User> loginForm = form(User.class);
+    final static Form<User> profileFrom = form(User.class);
 
     public Result blank() {
 
@@ -31,7 +31,7 @@ public class UserController extends Controller
         User user = userService.getUserByUsername(session().get("username"));
 
         if (user == null) {
-            return ok(login.render(loginForm));
+            return ok(login.render(profileFrom));
         }
 
         // Get users favorite team.
@@ -42,9 +42,13 @@ public class UserController extends Controller
 
     public Result updateUser() {
 
+        Form<User> filledForm = profileFrom.bindFromRequest();
+
         TeamService teamService = (TeamService) ctx.getBean("teamService");
 
-        return ok (profile.render(new User(), new Team(), teamService.getTeams()));
+
+
+        return ok(profile.render(new User(), new Team(), teamService.getTeams()));
     }
 
 }

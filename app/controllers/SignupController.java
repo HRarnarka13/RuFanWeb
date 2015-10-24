@@ -7,9 +7,8 @@ import is.rufan.user.service.UserService;
 import play.mvc.*;
 import play.data.*;
 
+import views.html.profile;
 import views.html.signup;
-import views.html.summary;
-
 import static play.data.Form.*;
 
 
@@ -52,12 +51,18 @@ public class SignupController extends AccountController {
             return badRequest(signup.render(filledForm, teamService.getTeams()));
         } else {
             UserRegistration created = filledForm.get();
+
+            String month = filledForm.data().get("credit_card_exp_date_month"); // Get the month
+            String year = filledForm.data().get("credit_card_exp_date_year"); // Get the year
+            created.setCredit_card_exp_date(month + "/" + year.substring(2));
             service.addUser(created);
 
+            session("username", created.getUsername());
+            session("displayName", created.getName());
 
             // Get user favorite team
             Team fav_team = teamService.getTeamByAbbrivation(created.getFav_teamabb());
-            return ok(summary.render(created, fav_team));
+            return ok(profile.render(created, fav_team, teamService.getTeams()));
         }
     }
 }
