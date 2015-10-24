@@ -13,7 +13,7 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.login;
-import views.html.summary;
+import views.html.profile;
 
 import static play.data.Form.form;
 
@@ -37,14 +37,14 @@ public class UserController extends Controller
         // Get users favorite team.
         //
         Team team = teamService.getTeamByAbbrivation(user.getFav_teamabb());
-        return ok(summary.render(user, team, teamService.getTeams()));
+        return ok(profile.render(user, team, teamService.getTeams()));
     }
 
     public Result updateUser() {
 
         TeamService teamService = (TeamService) ctx.getBean("teamService");
 
-        return ok (summary.render(new User(), new Team(), teamService.getTeams()));
+        return ok (profile.render(new User(), new Team(), teamService.getTeams()));
     }
 
 }
