@@ -50,20 +50,46 @@ public class UserController extends Controller
         String teamabb = filledForm.data().get("fav_teamabb");
 
         User user = userService.getUserByUsername(session().get("username"));
+        User usertest = filledForm.get();
         if (user == null) {
-            return ok(index.render());
+            return ok(index.render("Home"));
         }
+        boolean updateUser = false;
 
-        Team team = teamService.getTeamByAbbrivation(teamabb);
+        Team team = teamService.getTeamByAbbrivation(tea);
         if (team != null) {
             user.setFav_teamabb(team.getAbbreviation());
-            userService.updateUser(user.getId(), user);
-            return ok(profile.render(user, team, teamService.getTeams(), profileFrom));
+
         } else {
             team = teamService.getTeamByAbbrivation(user.getFav_teamabb());
-            return ok(profile.render(user, team, teamService.getTeams(), profileFrom));
         }
 
+        if((filledForm.field("credit_card_number").value().isEmpty() == false
+                && filledForm.field("credit_card_exp_date_month").value().isEmpty() == false
+                && filledForm.field("credit_card_exp_date_year").value().isEmpty() == false
+                && filledForm.field("credit_card_type").value().isEmpty() == false)){
+            if(filledForm.field("credit_card_number").value().length() != 16) {
+                filledForm.reject("credit_card_number", "Credit card number has to be 16 digits");
+            } else {
+                user.setCredit_card_type(filledForm.data().get("credit_card_type"));
+                user.setCredit_card_number(filledForm.data().get("credit_card_number"));
+                String month = filledForm.data().get("credit_card_exp_date_month"); // Get the month
+                String year = filledForm.data().get("credit_card_exp_date_year"); // Get the year
+                user.setCredit_card_exp_date(month + "/" + year.substring(2));
+                updateUser = true;
+            }
+        } else if(filledForm.field("credit_card_number").value().isEmpty() == false
+                || filledForm.field("credit_card_exp_date_month").value().isEmpty() == false
+                || filledForm.field("credit_card_exp_date_year").value().isEmpty() == false
+                || filledForm.field("credit_card_type").value().isEmpty() == false) {
+            filledForm.reject("credit_card_number", "Fill out all creditcard information, or leave everything empty.");
+        }
+
+        if (updateUser) {
+            userService.updateUser(user.getId(), user);
+        }
+
+        return ok(profile.render(user, team, teamService.getTeams(), profileFrom));
     }
 
 }
