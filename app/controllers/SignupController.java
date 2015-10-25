@@ -26,7 +26,6 @@ public class SignupController extends AccountController {
     public Result signup() {
         Form<UserRegistration> filledForm = signupForm.bindFromRequest();
 
-
         UserService service = (UserService) ctx.getBean("userService");
         TeamService teamService = (TeamService) ctx.getBean("teamService");
 
@@ -34,7 +33,7 @@ public class SignupController extends AccountController {
             filledForm.reject("accept", "You must accept the terms and conditions");
         }
 
-        if(service.getUserByUsername(filledForm.field("username").value()) != null) {
+        if (service.getUserByUsername(filledForm.field("username").value()) != null) {
             filledForm.reject("username", "Username already exists");
         }
 
@@ -50,17 +49,37 @@ public class SignupController extends AccountController {
             filledForm.reject("password", "The password is too short");
         }
 
-        // TODO: Validate Credit card information
+        // Validate Credit card information
+        String month = null;
+        String year = null;
+        System.out.println("4" + filledForm.field("credit_card_type").value() + " "  + filledForm.data().get("credit_card_type"));
+        System.out.println("1" + filledForm.field("credit_card_number").value() + filledForm.data().get("credit_card_number"));
+        System.out.println("2" + filledForm.field("credit_card_exp_date_month").value() + filledForm.data().get("credit_card_exp_date_month"));
+        System.out.println("3" + filledForm.field("credit_card_exp_date_year").value()  + filledForm.data().get("credit_card_exp_date_year"));
 
+        if((filledForm.field("credit_card_number").value().isEmpty() == false
+            && filledForm.field("credit_card_exp_date_month").value().isEmpty() == false
+            && filledForm.field("credit_card_exp_date_year").value().isEmpty() == false
+            && filledForm.field("credit_card_type").value().isEmpty() == false)){
+            if(filledForm.field("credit_card_number").value().length() != 16) {
+                filledForm.reject("credit_card_number", "Credit card number has to be 16 digits");
+            }
+        } else if(filledForm.field("credit_card_number").value().isEmpty() == false
+            || filledForm.field("credit_card_exp_date_month").value().isEmpty() == false
+            || filledForm.field("credit_card_exp_date_year").value().isEmpty() == false
+            || filledForm.field("credit_card_type").value().isEmpty() == false) {
+            filledForm.reject("credit_card_number", "Fill out all creditcard information, or leave everything empty.");
+        }
 
         if (filledForm.hasErrors()) {
             return badRequest(signup.render(filledForm, teamService.getTeams()));
         } else {
             UserRegistration created = filledForm.get();
-
-            String month = filledForm.data().get("credit_card_exp_date_month"); // Get the month
-            String year = filledForm.data().get("credit_card_exp_date_year"); // Get the year
-            created.setCredit_card_exp_date(month + "/" + year.substring(2));
+            if(month != null && year != null){
+                month = filledForm.data().get("credit_card_exp_date_month"); // Get the month
+                year = filledForm.data().get("credit_card_exp_date_year"); // Get the year
+                created.setCredit_card_exp_date(month + "/" + year.substring(2));
+            }
             service.addUser(created);
 
             session("username", created.getUsername());
