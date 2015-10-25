@@ -55,11 +55,13 @@
                 </dt>
                 <dd>
                     <select name="credit_card_exp_date_month">
+                        <option value="">-</option>
                     @for(i <- 1 to 12) {
                         <option value="@i">@i</option>
                     }
                     </select>
                     <select name="credit_card_exp_date_year">
+                        <option value="">-</option>
                     @for(i <- 2015 to 2025) {
                         <option value="@i">@i</option>
                     }
@@ -71,7 +73,7 @@
 
         <div class="actions">
             <input type="submit" class="btn primary" value="Submit">
-            <a href="@routes.Application.index" class="btn">Cancel</a>
+            <a href="@routes.UserController.blank()" class="btn">Cancel</a>
         </div>
     }
 }
