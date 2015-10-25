@@ -37,7 +37,7 @@ public class UserController extends Controller
         // Get users favorite team.
         //
         Team team = teamService.getTeamByAbbrivation(user.getFav_teamabb());
-        return ok(profile.render(user, team, teamService.getTeams()));
+        return ok(profile.render(user, team, teamService.getTeams(), profileFrom));
     }
 
     public Result updateUser() {
@@ -46,9 +46,7 @@ public class UserController extends Controller
 
         TeamService teamService = (TeamService) ctx.getBean("teamService");
 
-
-
-        return ok(profile.render(new User(), new Team(), teamService.getTeams()));
+        return ok(profile.render(new User(), new Team(), teamService.getTeams(),profileFrom));
     }
 
 }

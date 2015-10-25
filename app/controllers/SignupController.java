@@ -2,11 +2,13 @@ package controllers;
 
 import is.rufan.team.domain.Team;
 import is.rufan.team.service.TeamService;
+import is.rufan.user.domain.User;
 import is.rufan.user.domain.UserRegistration;
 import is.rufan.user.service.UserService;
 import play.mvc.*;
 import play.data.*;
 
+import views.html.helper.form;
 import views.html.profile;
 import views.html.signup;
 import static play.data.Form.*;
@@ -14,6 +16,7 @@ import static play.data.Form.*;
 
 public class SignupController extends AccountController {
     final static Form<UserRegistration> signupForm = form(UserRegistration.class);
+    final static Form<User> updateForm = form(User.class);
 
     public Result blank() {
         TeamService teamService = (TeamService) ctx.getBean("teamService");
@@ -63,9 +66,11 @@ public class SignupController extends AccountController {
             session("username", created.getUsername());
             session("displayName", created.getName());
 
+
+
             // Get user favorite team
             Team fav_team = teamService.getTeamByAbbrivation(created.getFav_teamabb());
-            return ok(profile.render(created, fav_team, teamService.getTeams()));
+            return ok(profile.render(created, fav_team, teamService.getTeams(), updateForm));
         }
     }
 }

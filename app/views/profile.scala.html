@@ -1,37 +1,77 @@
-@(user: is.rufan.user.domain.User, fav_team: is.rufan.team.domain.Team, teams: List[is.rufan.team.domain.Team])
+@(user: is.rufan.user.domain.User,
+        fav_team: is.rufan.team.domain.Team,
+        teams: List[is.rufan.team.domain.Team],
+        updateForm: Form[is.rufan.user.domain.User]))
+
+@import helper._
 
 @main("Hello " + user.getName(), nav = "profile") {
 
-  <h2>Your account:</h2>
-  <dl class="dl-horizontal">
-    <dt>Name:</dt>
-    <dd>@user.getName()</dd>
-    <dt>Username:</dt>
-    <dd>@user.getUsername()<dd>
-    <dt>Email:</dt>
-    <dd>@user.getEmail()</dd>
+    <h2>Your account:</h2>
+    <dl class="dl-horizontal">
+        <dt>Name:</dt>
+        <dd>@user.getName()</dd>
+        <dt>Username:</dt>
+        <dd>@user.getUsername()<dd>
+        <dt>Email:</dt>
+        <dd>@user.getEmail()</dd>
 
-    <dt>Favorite team:</dt>
-    <dd>@if(fav_team.!=(null)) { @fav_team.getDisplayName() } else { No team }</dd>
+        <dt>Favorite team:</dt>
+        <dd>@if(fav_team.!=(null)) { @fav_team.getDisplayName() } else { No team }</dd>
 
-    <dt>Credit card:</dt>
-    <dd>@user.getCredit_card_type() - @user.getCredit_card_number()</dd>
-  </dl>
+        <dt>Favorite team venue</dt>
+        <dd>@fav_team.getVenue()</dd>
 
-  @helper.form(action = routes.UserController.updateUser()) {
-    <fieldset>
-      <legend>Update favorite team</legend>
-      <select class="fav_team" name="fav_team">
-        <option value="">Select a team</option>
-        @for(team <- teams) {
-          <option value="@team.getAbbreviation">@team.getDisplayName</option>
-        }
-      </select>
-    </fieldset>
+        <dt>Credit card:</dt>
+        <dd>@user.getCredit_card_type() - @user.getCredit_card_number()</dd>
+    </dl>
 
-    <div class="actions">
-      <input type="submit" class="btn primary" value="Login">
-      <a href="@routes.Application.index" class="btn">Cancel</a>
-    </div>
-  }
+    @helper.form(action = routes.UserController.updateUser()) {
+        <fieldset>
+            <legend>Update user information</legend>
+            @select(
+                updateForm("fav_teamabb"),
+                teams.map(team => team.getAbbreviation -> team.getDisplayName),
+                '_default -> "Select new favorite team",
+                '_label -> "Favorite team",
+                '_help -> "Please select your favorite team"
+            )
+
+            @inputRadioGroup(
+                updateForm("credit_card_type"),
+                options = Seq("No credit card"->"No credit card", "Visa"->"Visa", "Mastercard"->"Mastercard"),
+                '_label -> "Credit Card Type",
+                '_help -> "Please select credit card type."
+            )
+
+            @inputText(
+                updateForm("credit_card_number"),
+                '_label -> "Credit Card Number",
+                '_help -> "A Credit Card number must be 16 digits."
+            )
+            <dl class="">
+                <dt>
+                    <label for="credit_card_exp_date">Credit Card expiration date</label>
+                </dt>
+                <dd>
+                    <select name="credit_card_exp_date_month">
+                    @for(i <- 1 to 12) {
+                        <option value="@i">@i</option>
+                    }
+                    </select>
+                    <select name="credit_card_exp_date_year">
+                    @for(i <- 2015 to 2025) {
+                        <option value="@i">@i</option>
+                    }
+                    </select>
+                </dd>
+            </dl>
+
+        </fieldset>
+
+        <div class="actions">
+            <input type="submit" class="btn primary" value="Submit">
+            <a href="@routes.Application.index" class="btn">Cancel</a>
+        </div>
+    }
 }
