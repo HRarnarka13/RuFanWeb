@@ -12,6 +12,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.index;
 import views.html.login;
 import views.html.profile;
 
@@ -43,10 +44,26 @@ public class UserController extends Controller
     public Result updateUser() {
 
         Form<User> filledForm = profileFrom.bindFromRequest();
-
+        UserService userService = (UserService) ctx.getBean("userService");
         TeamService teamService = (TeamService) ctx.getBean("teamService");
 
-        return ok(profile.render(new User(), new Team(), teamService.getTeams(),profileFrom));
+        String teamabb = filledForm.data().get("fav_teamabb");
+
+        User user = userService.getUserByUsername(session().get("username"));
+        if (user == null) {
+            return ok(index.render());
+        }
+
+        Team team = teamService.getTeamByAbbrivation(teamabb);
+        if (team != null) {
+            user.setFav_teamabb(team.getAbbreviation());
+            userService.updateUser(user.getId(), user);
+            return ok(profile.render(user, team, teamService.getTeams(), profileFrom));
+        } else {
+            team = teamService.getTeamByAbbrivation(user.getFav_teamabb());
+            return ok(profile.render(user, team, teamService.getTeams(), profileFrom));
+        }
+
     }
 
 }
