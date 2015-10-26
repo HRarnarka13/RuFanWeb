@@ -62,6 +62,10 @@ public class TournamentController extends Controller {
         Form<Tournament> filledForm = tournamentForm.bindFromRequest();
         Tournament newTournament = filledForm.get();
 
+        TournamentService tournamentService = (TournamentService) ctx.getBean("tournamentService");
+
+        tournamentService.addTournament(newTournament);
+
         return ok(tournament.render(newTournament));
     }
 }

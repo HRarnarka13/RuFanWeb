@@ -5,16 +5,17 @@
 @main(title = "Tournament", nav = "tournament") {
     @helper.form(action = routes.TournamentController.addTournament()) {
         <fieldset>
-            <legend>Login details</legend>
+            <legend>Tournament details</legend>
             @inputText(
                 tournamentForm("name"),
-                '_label -> "Username"
+                '_label -> "name"
             )
 
             @inputText(
                 tournamentForm("entry_fee"),
                 '_label -> "Entry fee"
             )
+            @inputText(
                 tournamentForm("maxentries"),
                 '_label -> "Max entries"
             )

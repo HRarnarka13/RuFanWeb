@@ -19,7 +19,7 @@ POST        /profile                          controllers.UserController.updateU
 # Tournament
 GET         /tournaments                      controllers.TournamentController.getActiveTournaments()
 GET         /tournaments/:tournamentid        controllers.TournamentController.getTournamentById(tournamentid:Integer)
-GET         /tournaments/new                  controllers.TournamentController.blank()
+GET         /add_tournaments                  controllers.TournamentController.blank()
 POST        /tournaments                      controllers.TournamentController.addTournament()
 
 
