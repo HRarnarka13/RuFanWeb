@@ -67,7 +67,7 @@ public class UserController extends Controller
         if((filledForm.field("credit_card_number").value().isEmpty() == false
                 && filledForm.field("credit_card_exp_date_month").value().isEmpty() == false
                 && filledForm.field("credit_card_exp_date_year").value().isEmpty() == false
-                && filledForm.field("credit_card_type").value().isEmpty() == false)){
+                && filledForm.field("credit_card_type").value() != null)){
             if(filledForm.field("credit_card_number").value().length() != 16) {
                 filledForm.reject("credit_card_number", "Credit card number has to be 16 digits");
             } else {

@@ -1,7 +1,7 @@
 @(user: is.rufan.user.domain.User,
         fav_team: is.rufan.team.domain.Team,
         teams: List[is.rufan.team.domain.Team],
-        updateForm: Form[is.rufan.user.domain.User]))
+        updateForm: Form[is.rufan.user.domain.User])
 
 @import helper._
 
@@ -22,8 +22,14 @@
         <dt>Favorite team venue</dt>
         <dd>@if(fav_team.!=(null)) { @fav_team.getVenue() } else { No team}</dd>
 
-        <dt>Credit card:</dt>
-        <dd>@user.getCredit_card_type() - @user.getCredit_card_number()</dd>
+        <dt>Credit card type:</dt>
+        <dd>@user.getCredit_card_type()</dd>
+
+        <dt>Credit card number:</dt>
+        <dd>****-****-****-@user.getCredit_card_number().substring(12)</dd>
+
+        <dt>Credit card expiration:</dt>
+        <dd>@user.getCredit_card_exp_date </dd>
     </dl>
 
     @helper.form(action = routes.UserController.updateUser()) {

@@ -1,0 +1,29 @@
+@(tournaments: List[is.rufan.tournament.domain.Tournament])
+
+@main("Tournaments", nav = "signup") {
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Tournament</th>
+                <th>Start time</th>
+                <th>End time</th>
+                <th>League</th>
+            </tr>
+        </thead>
+        <tbody>
+            @tournaments.map { tournament =>
+            <tr>
+                <td>
+                    <a href="@routes.TournamentController.getTournamentById(tournament.getTournamentid())">
+                        @tournament.getName()
+                    </a>
+                </td>
+                <td>@tournament.getStartTime()</td>
+                <td>@tournament.getEndTime()</td>
+                <td>English</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
