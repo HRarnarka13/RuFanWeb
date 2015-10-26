@@ -67,7 +67,7 @@ public class SignupController extends AccountController {
         } else if(filledForm.field("credit_card_number").value().isEmpty() == false
             || filledForm.field("credit_card_exp_date_month").value().isEmpty() == false
             || filledForm.field("credit_card_exp_date_year").value().isEmpty() == false
-            || filledForm.field("credit_card_type").value().isEmpty() == false) {
+            || filledForm.field("credit_card_type").value() != null) {
             filledForm.reject("credit_card_number", "Fill out all creditcard information, or leave everything empty.");
         }
 

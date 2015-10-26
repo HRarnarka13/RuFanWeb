@@ -51,7 +51,7 @@ public class UserController extends Controller
 
         User user = userService.getUserByUsername(session().get("username"));
         if (user == null) {
-            return ok(index.render());
+            return ok(index.render("Hello"));
         }
 
         Team team = teamService.getTeamByAbbrivation(teamabb);
