@@ -59,7 +59,7 @@ public class UserController extends Controller
         Team team = teamService.getTeamByAbbrivation(teamabb);
         if (team != null) {
             user.setFav_teamabb(team.getAbbreviation());
-
+            updateUser = true;
         } else {
             team = teamService.getTeamByAbbrivation(user.getFav_teamabb());
         }
