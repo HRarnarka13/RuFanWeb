@@ -52,11 +52,11 @@ public class UserController extends Controller
         User user = userService.getUserByUsername(session().get("username"));
         User usertest = filledForm.get();
         if (user == null) {
-            return ok(index.render("Home"));
+            return ok(index.render("Hello"));
         }
         boolean updateUser = false;
 
-        Team team = teamService.getTeamByAbbrivation(tea);
+        Team team = teamService.getTeamByAbbrivation(teamabb);
         if (team != null) {
             user.setFav_teamabb(team.getAbbreviation());
 
