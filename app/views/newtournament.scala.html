@@ -1,0 +1,28 @@
+@(tournamentForm: Form[is.rufan.tournament.domain.Tournament])
+
+@import helper._
+
+@main(title = "Tournament", nav = "tournament") {
+    @helper.form(action = routes.TournamentController.addTournament()) {
+        <fieldset>
+            <legend>Login details</legend>
+            @inputText(
+                tournamentForm("name"),
+                '_label -> "Username"
+            )
+
+            @inputText(
+                tournamentForm("entry_fee"),
+                '_label -> "Entry fee"
+            )
+                tournamentForm("maxentries"),
+                '_label -> "Max entries"
+            )
+        </fieldset>
+
+        <div class="actions">
+            <input type="submit" class="btn primary" value="Login">
+            <a href="@routes.Application.index" class="btn">Cancel</a>
+        </div>
+    }
+}

@@ -6,5 +6,6 @@
        <bean id="userService" class="is.rufan.user.service.UserServiceData"/>
 
        <bean id="teamService" class="is.rufan.team.service.TeamServiceData"></bean>
+       <bean id="tournamentService" class="is.rufan.tournament.service.TournamentServiceData"></bean>
 
 </beans>
