@@ -1,9 +1,6 @@
 package controllers;
 
-import Models.GameDTO;
-import Models.PlayerDTO;
-import Models.SelectPlayersDTO;
-import Models.TournamentDTO;
+import Models.*;
 import heplers.TournamentHelper;
 import is.rufan.player.domain.Player;
 import is.rufan.player.domain.Position;
@@ -40,6 +37,7 @@ public class TournamentController extends Controller {
 
     protected ApplicationContext ctx = new FileSystemXmlApplicationContext("/conf/userapp.xml");
     final static Form<Tournament> tournamentForm = form(Tournament.class);
+    final static Form<FantasyTeamViewModel> fantasyTeamForm = form(FantasyTeamViewModel.class);
     private TournamentService tournamentService;
     TeamService teamService;
     GameService gameService;
@@ -90,7 +88,8 @@ public class TournamentController extends Controller {
         }
 
         SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
-        return ok(tournament.render(t, games, fantasy_players.isEmpty() ? null : fantasy_players, available_players));
+        return ok(tournament.render(t, games, fantasy_players.isEmpty() ? null : fantasy_players, available_players,
+                fantasyTeamForm));
     }
 
     public Result blank() {
@@ -173,7 +172,38 @@ public class TournamentController extends Controller {
 
             SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
 
-            return ok(tournament.render(newTournament, games, null, available_players));
+            return ok(tournament.render(newTournament, games, null, available_players, fantasyTeamForm));
+        }
+    }
+
+    public Result enroll(int tournamentid) {
+        Form<FantasyTeamViewModel> filledForm = fantasyTeamForm.bindFromRequest();
+        if (filledForm.hasErrors()) {
+            return redirect(routes.TournamentController.getTournamentById(tournamentid));
+        } else {
+            FantasyTeamViewModel fantasyTeamForm = filledForm.get();
+            List<Integer> fantasyTeamPlayers = new ArrayList<Integer>();
+            // region add every fantasy team player to a list
+            fantasyTeamPlayers.add(fantasyTeamForm.goalkeeper);
+            fantasyTeamPlayers.add(fantasyTeamForm.defender1);
+            fantasyTeamPlayers.add(fantasyTeamForm.defender2);
+            fantasyTeamPlayers.add(fantasyTeamForm.defender3);
+            fantasyTeamPlayers.add(fantasyTeamForm.defender4);
+            fantasyTeamPlayers.add(fantasyTeamForm.midfielder1);
+            fantasyTeamPlayers.add(fantasyTeamForm.midfielder2);
+            fantasyTeamPlayers.add(fantasyTeamForm.midfielder3);
+            fantasyTeamPlayers.add(fantasyTeamForm.midfielder4);
+            fantasyTeamPlayers.add(fantasyTeamForm.striker1);
+            fantasyTeamPlayers.add(fantasyTeamForm.striker2);
+            // endregion
+
+            User user = userService.getUserByUsername(session().get("username"));
+            if (user == null) {
+                return redirect(routes.LoginController.blank());
+            }
+            int fantasy_teamid = fantasyTeamService.addFantasyTeam(user.getId(), fantasyTeamPlayers);
+            
+            return redirect(routes.TournamentController.getTournamentById(tournamentid));
         }
     }
 }
