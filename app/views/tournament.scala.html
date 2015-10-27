@@ -6,45 +6,47 @@
 
 @main(tournament.getName(), nav = "signup") {
 
-    <div class="col-md-12">
-        <dl class="dl-horizontal">
-            <dt>Entry fee</dt>
-            <dd>@tournament.getEntryFee()</dd>
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>Entry fee</dt>
+                <dd>@tournament.getEntryFee()</dd>
 
-            <dt>Start time</dt>
-            <dd>@tournament.getStartTime()<dd>
+                <dt>Start time</dt>
+                <dd>@tournament.getStartTime()<dd>
 
-            <dt>End time</dt>
-            <dd>@tournament.getEndTime()</dd>
+                <dt>End time</dt>
+                <dd>@tournament.getEndTime()</dd>
 
-            <dt>Max entries</dt>
-            <dd>@tournament.getMaxEntries()</dd>
-
-            <dt>Games</dt>
-            <dd>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Home team</th>
-                            <th>Away team</th>
-                            <th>Venue</th>
-                            <th>Time</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for(game <- games) {
-                        <tr>
-                            <td>@game.getTeamHome.getDisplayName</td>
-                            <td>@game.getTeamAway.getDisplayName</td>
-                            <td>@game.getVenue.getName</td>
-                            <td>@game.getStartTime</td>
-                        </tr>
-                        }
-                    </tbody>
-                </table>
-            </dd>
-        </dl>
+                <dt>Max entries</dt>
+                <dd>@tournament.getMaxEntries()</dd>
+            </dl>
+        </div>
+        <div class="col-md-6">
+            <h2>Games</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Home team</th>
+                        <th>Away team</th>
+                        <th>Venue</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(game <- games) {
+                    <tr>
+                        <td>@game.getTeamHome.getDisplayName</td>
+                        <td>@game.getTeamAway.getDisplayName</td>
+                        <td>@game.getVenue.getName</td>
+                        <td>@game.getStartTime</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
+    <div class="row">
         @if(fantasy_players != null ) {
             <h2>Your fantasy team</h2>
             <div class="col-md-12">
@@ -67,8 +69,8 @@
                                     }
                                 </ul>
                             </td>
+                            <td>Liverpool</td>
                         </tr>
-                        <tr></tr>
                     }
                     </tbody>
                 </table>
@@ -173,4 +175,5 @@
                 </div>
             }
         }
+    </div>
 }

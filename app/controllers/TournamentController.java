@@ -6,6 +6,7 @@ import is.rufan.player.domain.Player;
 import is.rufan.player.domain.Position;
 import is.rufan.player.service.PlayerService;
 import is.rufan.team.domain.Game;
+import is.rufan.team.domain.Team;
 import is.rufan.team.service.GameService;
 import is.rufan.team.service.TeamService;
 import is.rufan.tournament.domain.FantasyTeam;
@@ -77,19 +78,36 @@ public class TournamentController extends Controller {
             return redirect(routes.LoginController.blank());
         }
 
-        List<Player> fantasy_players = new ArrayList<Player>();
+        // Get the fantasy team if the user has already created a fantasy team for the current tournament
+        List<PlayerDTO> fantasy_players = new ArrayList<PlayerDTO>();
         for (TournamentEnrollment te : t.getEnrollments()) {
-            int curr_teamid = te.getTeamId();
-            FantasyTeam ft = fantasyTeamService.getFantasyTeam(curr_teamid);
-            for(Integer fantasy_playerid : ft.getPlayers()) {
-                Player fantasy_player = playerService.getPlayer(fantasy_playerid);
-                fantasy_players.add(fantasy_player);
+            // Get the fantasy team for each enrollment
+            FantasyTeam ft = fantasyTeamService.getFantasyTeam(te.getTeamId());
+            /// check if the fantasy team belongs to the current user
+            if (ft.getUserId() == user.getId()) {
+                for (Integer fantasy_playerid : ft.getPlayers()) {
+                    Player fantasy_player = playerService.getPlayer(fantasy_playerid);
+                    fantasy_player.setPositions(new ArrayList<Position>(playerService.getPlayerPosition(fantasy_playerid)));
+                    Team team = teamService.getTeamById(fantasy_player.getTeamId());
+
+                    // Create DTO objects
+                    TeamDTO teamDTO = new TeamDTO(team.getDisplayName(), team.getAbbreviation());
+                    PlayerDTO playerDTO = new PlayerDTO(fantasy_playerid, fantasy_player.getFirstName(),
+                            fantasy_player.getLastName(), teamDTO, fantasy_player.getPositions());
+                    fantasy_players.add(playerDTO);
+                }
             }
         }
+        // If the user has not created a fantasy team for the tournament render a view to create a new fantasy team for
+        // the current tournament
+        if (fantasy_players.isEmpty()) {
+            SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
+            return ok(tournament.render(t, games, null, available_players,
+                    fantasyTeamForm));
+        }
 
-        SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
-        return ok(tournament.render(t, games, fantasy_players.isEmpty() ? null : fantasy_players, available_players,
-                fantasyTeamForm));
+        return ok(tournament.render(t, games, fantasy_players, null));
+
     }
 
     /**
@@ -189,6 +207,11 @@ public class TournamentController extends Controller {
         }
     }
 
+    /**
+     * This
+     * @param tournamentid
+     * @return
+     */
     public Result enroll(int tournamentid) {
         Form<FantasyTeamViewModel> filledForm = fantasyTeamForm.bindFromRequest();
         if (filledForm.hasErrors()) {
