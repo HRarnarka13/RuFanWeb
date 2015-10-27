@@ -6,6 +6,7 @@ import is.rufan.player.domain.Player;
 import is.rufan.player.domain.Position;
 import is.rufan.player.service.PlayerService;
 import is.rufan.team.domain.Game;
+import is.rufan.team.domain.Team;
 import is.rufan.team.service.GameService;
 import is.rufan.team.service.TeamService;
 import is.rufan.tournament.domain.FantasyTeam;
@@ -15,6 +16,8 @@ import is.rufan.tournament.service.FantasyTeamService;
 import is.rufan.tournament.service.TournamentService;
 import is.rufan.user.domain.User;
 import is.rufan.user.service.UserService;
+import org.apache.commons.lang3.time.DateUtils;
+import org.h2.mvstore.DataUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import play.data.Form;
@@ -95,19 +98,35 @@ public class TournamentController extends Controller {
             return redirect(routes.LoginController.blank());
         }
 
-        List<Player> fantasy_players = new ArrayList<Player>();
+        // Get the fantasy team if the user has already created a fantasy team for the current tournament
+        List<PlayerDTO> fantasy_players = new ArrayList<PlayerDTO>();
         for (TournamentEnrollment te : t.getEnrollments()) {
-            int curr_teamid = te.getTeamId();
-            FantasyTeam ft = fantasyTeamService.getFantasyTeam(curr_teamid);
-            for(Integer fantasy_playerid : ft.getPlayers()) {
-                Player fantasy_player = playerService.getPlayer(fantasy_playerid);
-                fantasy_players.add(fantasy_player);
+            // Get the fantasy team for each enrollment
+            FantasyTeam ft = fantasyTeamService.getFantasyTeam(te.getTeamId());
+            /// check if the fantasy team belongs to the current user
+            if (ft.getUserId() == user.getId()) {
+                for (Integer fantasy_playerid : ft.getPlayers()) {
+                    Player fantasy_player = playerService.getPlayer(fantasy_playerid);
+                    fantasy_player.setPositions(new ArrayList<Position>(playerService.getPlayerPosition(fantasy_playerid)));
+                    Team team = teamService.getTeamById(fantasy_player.getTeamId());
+
+                    // Create DTO objects
+                    TeamDTO teamDTO = new TeamDTO(team.getDisplayName(), team.getAbbreviation());
+                    PlayerDTO playerDTO = new PlayerDTO(fantasy_playerid, fantasy_player.getFirstName(),
+                            fantasy_player.getLastName(), teamDTO, fantasy_player.getPositions());
+                    fantasy_players.add(playerDTO);
+                }
             }
         }
+        // If the user has not created a fantasy team for the tournament render a view to create a new fantasy team for
+        // the current tournament
+        if (fantasy_players.isEmpty()) {
+            SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
+            return ok(tournament.render(t, games, null, available_players, fantasyTeamForm));
+        }
 
-        SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
-        return ok(tournament.render(t, games, fantasy_players.isEmpty() ? null : fantasy_players, available_players,
-                fantasyTeamForm));
+        return ok(tournament.render(t, games, fantasy_players, null, fantasyTeamForm));
+
     }
 
     /**
@@ -179,19 +198,10 @@ public class TournamentController extends Controller {
             }
             // Update the start and end time
             newTournament.setStartTime(first_game_date);
-            newTournament.setEndTime(last_game_date);
+            newTournament.setEndTime(DateUtils.addHours(last_game_date, 2));
             int tournamentid = tournamentService.addTournament(newTournament);
 
-            List<Player> players = new ArrayList<Player>();
-            for(Game game : games) {
-                for (Player player : playerService.getPlayersByTeamId(0, game.getTeamHome().getTeamId())) {
-                    players.add(player);
-                }
-                for (Player player : playerService.getPlayersByTeamId(0, game.getTeamHome().getTeamId())) {
-                    players.add(player);
-                }
-            }
-
+            // Get list of abailable players for the current tournament
             SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
 
             return ok(tournament.render(newTournament, games, null, available_players, fantasyTeamForm));
@@ -199,11 +209,10 @@ public class TournamentController extends Controller {
     }
 
     /**
-     * This method gets called when a user enrolls his fantasy team to a fantasy tournament
-     * @param tournamentid The Id of the tournament to add the team to
+     * This method enrolls a user in a give tournament, the user provides his fantasy team that he/she has selected.
+     * @param tournamentid the id of the tournament
      * @return a view containing the enrolled team
      */
-
     public Result enroll(int tournamentid) {
         Form<FantasyTeamViewModel> filledForm = fantasyTeamForm.bindFromRequest();
         if (filledForm.hasErrors()) {
@@ -211,6 +220,16 @@ public class TournamentController extends Controller {
         } else {
             FantasyTeamViewModel fantasyTeamForm = filledForm.get();
             List<Integer> fantasyTeamPlayers = new ArrayList<Integer>();
+
+            // Check if there are duplicates in the list
+            Set<Integer> set = new HashSet<Integer>(fantasyTeamPlayers);
+            if(set.size() < fantasyTeamPlayers.size()){
+                Tournament tournament = tournamentService.getTournamentById(tournamentid);
+
+                // return badRequest(tournament.render(tournamentService.getTournamentById(tournamentid), ))
+            }
+
+
             // region add every fantasy team player to a list
             fantasyTeamPlayers.add(fantasyTeamForm.goalkeeper);
             fantasyTeamPlayers.add(fantasyTeamForm.defender1);
@@ -229,6 +248,7 @@ public class TournamentController extends Controller {
             if (user == null) {
                 return redirect(routes.LoginController.blank());
             }
+
             int fantasy_teamid = fantasyTeamService.addFantasyTeam(user.getId(), fantasyTeamPlayers);
             tournamentService.addEnrollment(tournamentid, fantasy_teamid);
             return redirect(routes.TournamentController.getTournamentById(tournamentid));

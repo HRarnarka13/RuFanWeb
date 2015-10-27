@@ -20,7 +20,7 @@
         <dd>@if(fav_team.!=(null)) { @fav_team.getDisplayName() } else { No team }</dd>
 
         <dt>Favorite team venue</dt>
-        <dd>@if(fav_team.!=(null)) { @fav_team.getVenue() } else { No team}</dd>
+        <dd>@if(fav_team.!=(null)) { @fav_team.getVenue().getName } else { No team}</dd>
 
         <dt>Credit card type:</dt>
         <dd>@user.getCredit_card_type()</dd>
