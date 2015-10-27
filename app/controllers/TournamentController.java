@@ -92,11 +92,19 @@ public class TournamentController extends Controller {
                 fantasyTeamForm));
     }
 
+    /**
+     * Renders a form to create a new tournament.
+     * @return a create new tournament form.
+     */
     public Result blank() {
         List<Game> games = gameService.getGames();
         return ok(newtournament.render(tournamentForm, games));
     }
 
+    /**
+     * This method gets called when a operator creates
+     * @return
+     */
     public Result addTournament() {
         Form<Tournament> filledForm = tournamentForm.bindFromRequest();
 
@@ -202,7 +210,7 @@ public class TournamentController extends Controller {
                 return redirect(routes.LoginController.blank());
             }
             int fantasy_teamid = fantasyTeamService.addFantasyTeam(user.getId(), fantasyTeamPlayers);
-            tournamentService.addEnrollment(user.getId(), fantasy_teamid);
+            tournamentService.addEnrollment(tournamentid, fantasy_teamid);
             return redirect(routes.TournamentController.getTournamentById(tournamentid));
         }
     }

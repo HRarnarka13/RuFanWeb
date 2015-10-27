@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.myfantasyteams;
 
 /**
  * Created by arnarkari on 27/10/15.
@@ -24,5 +25,14 @@ public class FantasyTeamController extends Controller {
         teamService = (TeamService) ctx.getBean("teamService");
         gameService = (GameService) ctx.getBean("gameService");
         playerService = (PlayerService) ctx.getBean("playerService");
+    }
+
+
+    /**
+     * This method gets a list of all active fantasy teams for a given user.
+     * @return list of all active fantasy teams for a given user.
+     */
+    public Result getFantasyTeams() {
+        return ok(myfantasyteams.render());
     }
 }

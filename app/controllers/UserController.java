@@ -47,6 +47,10 @@ public class UserController extends Controller
         return ok(profile.render(user, team, teamService.getTeams(), profileFrom));
     }
 
+    /**
+     * This method is called when a user sends a post method to update his/her user information
+     * @return
+     */
     public Result updateUser() {
 
         Form<User> filledForm = profileFrom.bindFromRequest();
