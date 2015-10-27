@@ -1,10 +1,18 @@
 package controllers;
 
+import Models.FantasyTeamViewModel;
+import Models.PlayerDTO;
+import Models.TournamentDTO;
+import is.rufan.player.domain.Player;
 import is.rufan.player.service.PlayerService;
 import is.rufan.team.service.GameService;
 import is.rufan.team.service.TeamService;
+import is.rufan.tournament.domain.FantasyPlayer;
 import is.rufan.tournament.domain.FantasyTeam;
+import is.rufan.tournament.domain.Tournament;
+import is.rufan.tournament.service.FantasyPlayerService;
 import is.rufan.tournament.service.FantasyTeamService;
+import is.rufan.tournament.service.TournamentService;
 import is.rufan.user.domain.User;
 import is.rufan.user.service.UserService;
 import org.springframework.context.ApplicationContext;
@@ -13,6 +21,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.myfantasyteams;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +36,8 @@ public class FantasyTeamController extends Controller {
     GameService gameService;
     PlayerService playerService;
     FantasyTeamService fantasyTeamService;
+    FantasyPlayerService fantasyPlayerService;
+    TournamentService tournamentService;
     UserService userService;
 
     public FantasyTeamController() {
@@ -34,6 +45,8 @@ public class FantasyTeamController extends Controller {
         gameService = (GameService) ctx.getBean("gameService");
         playerService = (PlayerService) ctx.getBean("playerService");
         fantasyTeamService = (FantasyTeamService) ctx.getBean("fantasyTeamService");
+        fantasyPlayerService = (FantasyPlayerService) ctx.getBean("fantasyPlayerService");
+        tournamentService = (TournamentService) ctx.getBean("tournamentService");
         userService = (UserService) ctx.getBean("userService");
     }
 
@@ -44,8 +57,23 @@ public class FantasyTeamController extends Controller {
      */
     public Result getFantasyTeams() {
         User user = userService.getUserByUsername(session().get("username"));
-
         List<FantasyTeam> teams = fantasyTeamService.getFantasyTeamByUserId(user.getId());
+        List<TournamentDTO> tournaments;
+
+        for(Tournament tournament : tournamentService.getActiveTournaments()) {
+            for (FantasyTeam t : tournamentService.getFantasyTeamsByTournamentId(tournament.getTournamentid())) {
+                if(t.getUserId() == user.getId()){
+                    TournamentDTO tournamentDTO = new TournamentDTO(tournament.getEntryFee(), tournament.getMaxEntries(), tournament.getStartTime(), tournament.getEndTime());
+                    List<FantasyPlayer> teamPlayers = fantasyPlayerService.getFantasyPlayersByTeamId(t.getFantasyTeamId());
+                    List<PlayerDTO> players = new ArrayList<PlayerDTO>();
+                    for(FantasyPlayer fp : teamPlayers){
+                        Player player = playerService.getPlayer(fp.getPlayerid());
+                        Team team = teamService.
+                    }
+                    tournamentDTO.setAvailable_players(players);
+                }
+            }
+        }
         return ok(myfantasyteams.render(teams));
     }
 }
