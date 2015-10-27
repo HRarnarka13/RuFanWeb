@@ -9,6 +9,7 @@ import java.util.List;
  *
  * @author arnarkari
  */
+
 public class TournamentDTO {
 
     private double entry_fee;

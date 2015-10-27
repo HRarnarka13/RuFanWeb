@@ -57,11 +57,29 @@ public class TournamentController extends Controller {
         fantasyTeamService = (FantasyTeamService) ctx.getBean("fantasyTeamService");
     }
 
+    /**
+     * Returns a list of all active tournaments in the system
+     * @return all active tournaments
+     */
     public Result getActiveTournaments() {
         List<Tournament> tournamentList = tournamentService.getActiveTournaments();
         return ok(tournaments.render(tournamentList));
     }
 
+    /**
+     * Renders a form to create a new tournament.
+     * @return a create new tournament form.
+     */
+    public Result blank() {
+        List<Game> games = gameService.getGames();
+        return ok(newtournament.render(tournamentForm, games));
+    }
+
+    /**
+     * Gets a specific tournament
+     * @param tournamentid the tournament to be returned
+     * @return a view containing details about the tournament
+     */
     public Result getTournamentById(int tournamentid) {
 
         Tournament t = tournamentService.getTournamentById(tournamentid);
@@ -109,15 +127,6 @@ public class TournamentController extends Controller {
 
         return ok(tournament.render(t, games, fantasy_players, null, fantasyTeamForm));
 
-    }
-
-    /**
-     * Renders a form to create a new tournament.
-     * @return a create new tournament form.
-     */
-    public Result blank() {
-        List<Game> games = gameService.getGames();
-        return ok(newtournament.render(tournamentForm, games));
     }
 
     /**
@@ -202,7 +211,7 @@ public class TournamentController extends Controller {
     /**
      * This method enrolls a user in a give tournament, the user provides his fantasy team that he/she has selected.
      * @param tournamentid the id of the tournament
-     * @return
+     * @return a view containing the enrolled team
      */
     public Result enroll(int tournamentid) {
         Form<FantasyTeamViewModel> filledForm = fantasyTeamForm.bindFromRequest();
