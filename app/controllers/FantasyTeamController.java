@@ -2,6 +2,7 @@ package controllers;
 
 import Models.FantasyTeamViewModel;
 import Models.PlayerDTO;
+import Models.TeamDTO;
 import Models.TournamentDTO;
 import is.rufan.player.domain.Player;
 import is.rufan.player.service.PlayerService;
@@ -59,22 +60,27 @@ public class FantasyTeamController extends Controller {
     public Result getFantasyTeams() {
         User user = userService.getUserByUsername(session().get("username"));
         List<FantasyTeam> teams = fantasyTeamService.getFantasyTeamByUserId(user.getId());
-        List<TournamentDTO> tournaments;
 
+        List<TournamentDTO> tournaments = new ArrayList<TournamentDTO>();
         for(Tournament tournament : tournamentService.getActiveTournaments()) {
-            for (FantasyTeam t : tournamentService.getFantasyTeamsByTournamentId(tournament.getTournamentid())) {
+            List<FantasyTeam> fantasyTeams = tournamentService.getFantasyTeamsByTournamentId(tournament.getTournamentid());
+            for (FantasyTeam t : fantasyTeams) {
                 if(t.getUserId() == user.getId()){
                     TournamentDTO tournamentDTO = new TournamentDTO(tournament.getEntryFee(), tournament.getMaxEntries(), tournament.getStartTime(), tournament.getEndTime());
                     List<FantasyPlayer> teamPlayers = fantasyPlayerService.getFantasyPlayersByTeamId(t.getFantasyTeamId());
                     List<PlayerDTO> players = new ArrayList<PlayerDTO>();
                     for(FantasyPlayer fp : teamPlayers){
                         Player player = playerService.getPlayer(fp.getPlayerid());
-                        Team team = teamService;
+                        Team team = teamService.getTeamById(t.getFantasyTeamId());
+                        TeamDTO teamDTO = new TeamDTO(team.getDisplayName(), team.getAbbreviation());
+                        PlayerDTO playerDTO = new PlayerDTO(player.getPlayerId(), player.getFirstName(), player.getLastName(), teamDTO);
+                        players.add(playerDTO);
                     }
                     tournamentDTO.setAvailable_players(players);
+                    tournaments.add(tournamentDTO);
                 }
             }
         }
-        return ok(myfantasyteams.render(teams));
+        return ok(myfantasyteams.render(tournaments));
     }
 }

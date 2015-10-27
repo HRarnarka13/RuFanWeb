@@ -1,9 +1,27 @@
-@(teams: List[is.rufan.tournament.domain.FantasyTeam])
+@(tournaments: List[Models.TournamentDTO])
 @main("Hello", nav = "signup") {
-    @for(team <- teams){
-        <tr>
-            <td>@team.getFantasyTeamId</td>
-            <td></td>
-        </tr>
+    @for(tournament <- tournaments){
+        <div class="row">
+            <div class="col-md-6">
+                <dl class="dl-horizontal">
+                    <dt>Entry fee</dt>
+                    <dd>@tournament.getEntry_fee</dd>
+
+                    <dt>Start time</dt>
+                    <dd>@tournament.getStart_time<dd>
+
+                    <dt>End time</dt>
+                    <dd>@tournament.getEnd_time</dd>
+
+                    <dt>Max entries</dt>
+                    <dd>@tournament.getMaxentries</dd>
+                    <dt>List of players in team</dt>
+                    @for(player <- tournament.getAvailable_players){
+                        <dt>Player name</dt>
+                        <dd>@player.getFirstname + @player.getLastname</dd>
+                    }
+                </dl>
+            </div>
+        </div>
     }
 }
