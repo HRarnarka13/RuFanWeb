@@ -8,5 +8,7 @@
     <bean id="teamService" class="is.rufan.team.service.TeamServiceData"></bean>
     <bean id="gameService" class="is.rufan.team.service.GameServiceData"></bean>
     <bean id="tournamentService" class="is.rufan.tournament.service.TournamentServiceData"></bean>
+    <bean id="fantasyTeamService" class="is.rufan.tournament.service.FantasyTeamServiceData"></bean>
+    <bean id="fantasyPlayerService" class="is.rufan.tournament.service.FantasyPlayerServiceData"></bean>
 
 </beans>

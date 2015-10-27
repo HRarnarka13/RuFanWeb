@@ -1,4 +1,7 @@
-@(tournament: is.rufan.tournament.domain.Tournament, games: List[is.rufan.team.domain.Game])
+@(tournament: is.rufan.tournament.domain.Tournament,
+        games: List[is.rufan.team.domain.Game],
+        fantasy_players : List[is.rufan.player.domain.Player],
+        select_players : Models.SelectPlayersDTO)
 
 @main(tournament.getName(), nav = "signup") {
 
@@ -39,6 +42,49 @@
                     </tbody>
                 </table>
             </dd>
+            @if(fantasy_players != null || !fantasy_players.isEmpty) {
+                <dt>Players</dt>
+                <dd>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Postions</th>
+                                <th>Team</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @for(player <- fantasy_players) {
+                            <tr>
+                                <td>@player.getFirstName @player.getLastName </td>
+                                <td>
+                                    <ul>
+                                        @for(pos <- player.getPositions) {
+                                            <li>@pos.getName (@pos.getAbbreviation())</li>
+                                        }
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr></tr>
+                        }
+                        </tbody>
+                    </table>
+                </dd>
+            } else {
+                <dt>Pick players</dt>
+                <dd>
+                    <select name="goalkeeper">
+                        @for(player <- select_players.getGK) {
+                            <option value="@player.getPlayerid">@player.getFirstname @player.getLastname</option>
+                        }
+                    </select>
+                    <select name="defender">
+                    @for(player <- select_players.getD) {
+                        <option value="@player.getPlayerid">@player.getFirstname @player.getLastname</option>
+                    }
+                    </select>
+                </dd>
+            }
         </dl>
     </div>
     <div class="col-md-3">

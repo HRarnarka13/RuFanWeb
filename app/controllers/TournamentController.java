@@ -1,10 +1,20 @@
 package controllers;
 
+import Models.GameDTO;
+import Models.PlayerDTO;
+import Models.SelectPlayersDTO;
+import Models.TournamentDTO;
+import heplers.TournamentHelper;
+import is.rufan.player.domain.Player;
+import is.rufan.player.domain.Position;
+import is.rufan.player.service.PlayerService;
 import is.rufan.team.domain.Game;
 import is.rufan.team.service.GameService;
 import is.rufan.team.service.TeamService;
+import is.rufan.tournament.domain.FantasyTeam;
 import is.rufan.tournament.domain.Tournament;
 import is.rufan.tournament.domain.TournamentEnrollment;
+import is.rufan.tournament.service.FantasyTeamService;
 import is.rufan.tournament.service.TournamentService;
 import is.rufan.user.domain.User;
 import is.rufan.user.service.UserService;
@@ -34,25 +44,20 @@ public class TournamentController extends Controller {
     TeamService teamService;
     GameService gameService;
     UserService userService;
+    PlayerService playerService;
+    FantasyTeamService fantasyTeamService;
 
     public TournamentController() {
         tournamentService = (TournamentService) ctx.getBean("tournamentService");
         teamService = (TeamService) ctx.getBean("teamService");
         gameService = (GameService) ctx.getBean("gameService");
         userService = (UserService) ctx.getBean("userService");
+        playerService = (PlayerService) ctx.getBean("playerService");
+        fantasyTeamService = (FantasyTeamService) ctx.getBean("fantasyTeamService");
     }
 
     public Result getActiveTournaments() {
-
-        if (tournamentService == null) {
-            System.out.println("YEAH!" + tournamentService);
-        }
         List<Tournament> tournamentList = tournamentService.getActiveTournaments();
-
-        if (tournamentList.isEmpty()) {
-            System.out.println("TOURNAMENT LIST EMPTY");
-        }
-
         return ok(tournaments.render(tournamentList));
     }
 
@@ -62,6 +67,7 @@ public class TournamentController extends Controller {
         if (t == null) {
             return notFound();
         }
+        TournamentDTO tournamentDTO = new TournamentDTO(t.getEntryFee(), t.getMaxEntries(), t.getStartTime(), t.getEndTime());;
 
         List<Game> games = new ArrayList<Game>();
         for (Integer id : tournamentService.getTournamentGames(tournamentid)) {
@@ -73,15 +79,18 @@ public class TournamentController extends Controller {
             return redirect(routes.LoginController.blank());
         }
 
-
+        List<Player> fantasy_players = new ArrayList<Player>();
         for (TournamentEnrollment te : t.getEnrollments()) {
             int curr_teamid = te.getTeamId();
-
+            FantasyTeam ft = fantasyTeamService.getFantasyTeam(curr_teamid);
+            for(Integer fantasy_playerid : ft.getPlayers()) {
+                Player fantasy_player = playerService.getPlayer(fantasy_playerid);
+                fantasy_players.add(fantasy_player);
+            }
         }
 
-
-
-        return ok(tournament.render(t,games));
+        SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
+        return ok(tournament.render(t, games, fantasy_players, available_players));
     }
 
     public Result blank() {
@@ -107,8 +116,6 @@ public class TournamentController extends Controller {
             i++;
             key = "tournamentGames[" + i + "]";
         }
-
-
 
         filledForm.data().get("tournamentGames");
 
@@ -152,9 +159,21 @@ public class TournamentController extends Controller {
             }
             newTournament.setStartTime(first_game_date);
             newTournament.setEndTime(last_game_date);
-            tournamentService.addTournament(newTournament);
+            int tournamentid = tournamentService.addTournament(newTournament);
 
-            return ok(tournament.render(newTournament, games));
+            List<Player> players = new ArrayList<Player>();
+            for(Game game : games) {
+                for (Player player : playerService.getPlayersByTeamAbbreviation(0, game.getTeamHome().getAbbreviation())) {
+                    players.add(player);
+                }
+                for (Player player : playerService.getPlayersByTeamAbbreviation(0, game.getTeamHome().getAbbreviation())) {
+                    players.add(player);
+                }
+            }
+
+            SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
+
+            return ok(tournament.render(newTournament, games, null, available_players));
         }
     }
 }
