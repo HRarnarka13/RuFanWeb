@@ -144,12 +144,14 @@ public class TournamentController extends Controller {
             return badRequest(newtournament.render(tournamentForm, games));
         } else {
 
+            // Get the new tournament information
             Tournament newTournament = filledForm.get();
-
             newTournament.setEntryFee(Double.parseDouble(entry_fee));
             newTournament.setMaxEntries(Integer.parseInt(maxentries));
             newTournament.setStatus(true);
 
+            // Find the actual games the operator has selected and get the start time and end time for the tournament
+            // based on the games.
             List<Game> games = new ArrayList<Game>();
             Date first_game_date = null, last_game_date = null;
             for(Integer gameid : selected_gameids) {
@@ -166,6 +168,7 @@ public class TournamentController extends Controller {
                     games.add(game);
                 }
             }
+            // Update the start and end time
             newTournament.setStartTime(first_game_date);
             newTournament.setEndTime(last_game_date);
             int tournamentid = tournamentService.addTournament(newTournament);
