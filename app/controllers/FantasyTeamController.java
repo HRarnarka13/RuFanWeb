@@ -5,6 +5,7 @@ import Models.PlayerDTO;
 import Models.TournamentDTO;
 import is.rufan.player.domain.Player;
 import is.rufan.player.service.PlayerService;
+import is.rufan.team.domain.Team;
 import is.rufan.team.service.GameService;
 import is.rufan.team.service.TeamService;
 import is.rufan.tournament.domain.FantasyPlayer;
@@ -68,7 +69,7 @@ public class FantasyTeamController extends Controller {
                     List<PlayerDTO> players = new ArrayList<PlayerDTO>();
                     for(FantasyPlayer fp : teamPlayers){
                         Player player = playerService.getPlayer(fp.getPlayerid());
-                        Team team = teamService.
+                        Team team = teamService;
                     }
                     tournamentDTO.setAvailable_players(players);
                 }
