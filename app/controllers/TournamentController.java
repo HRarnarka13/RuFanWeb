@@ -108,12 +108,13 @@ public class TournamentController extends Controller {
     public Result addTournament() {
         Form<Tournament> filledForm = tournamentForm.bindFromRequest();
 
+        // Get the tournament details from the form
         String name, entry_fee, maxentries;
-
         name = filledForm.data().get("name");
         entry_fee = filledForm.data().get("entry_fee");
         maxentries = filledForm.data().get("maxentries");
 
+        // Get the games that the operator has picked for the tournament
         List<Integer> selected_gameids = new ArrayList<Integer>();
         int i = 0;
         String key = "tournamentGames[" + i + "]";
@@ -124,9 +125,7 @@ public class TournamentController extends Controller {
             key = "tournamentGames[" + i + "]";
         }
 
-        filledForm.data().get("tournamentGames");
-
-        // region validate form
+        // Validate form
         if (name == "") {
             filledForm.reject("name", "Please provide a name for the tournament");
         }
@@ -135,6 +134,9 @@ public class TournamentController extends Controller {
         }
         if (maxentries == "") {
             filledForm.reject("maxentries", "Please provide max entries for the tournament");
+        }
+        if (selected_gameids.isEmpty()) {
+            filledForm.reject("tournamentGames[]", "Please select games for the tournament");
         }
 
         if (filledForm.hasErrors()) {
