@@ -202,7 +202,7 @@ public class TournamentController extends Controller {
                 return redirect(routes.LoginController.blank());
             }
             int fantasy_teamid = fantasyTeamService.addFantasyTeam(user.getId(), fantasyTeamPlayers);
-            
+            tournamentService.addEnrollment(user.getId(), fantasy_teamid);
             return redirect(routes.TournamentController.getTournamentById(tournamentid));
         }
     }
