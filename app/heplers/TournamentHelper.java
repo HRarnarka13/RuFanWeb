@@ -1,7 +1,9 @@
 package heplers;
 
+import Models.GameDTO;
 import Models.PlayerDTO;
 import Models.SelectPlayersDTO;
+import Models.TeamDTO;
 import is.rufan.player.domain.Player;
 import is.rufan.player.domain.Position;
 import is.rufan.player.service.PlayerService;
@@ -59,7 +61,8 @@ public class TournamentHelper {
         for(Game game : games) {
             for (Player player : playerService.getPlayersByTeamId(0, game.getTeamHome().getTeamId())) {
                 player.setPositions(new ArrayList<Position>(playerService.getPlayerPosition(player.getPlayerId())));
-                PlayerDTO p = new PlayerDTO(player.getPlayerId(), player.getFirstName(), player.getLastName(),
+                TeamDTO teamDTO = new TeamDTO(game.getTeamHome().getDisplayName(), game.getTeamHome().getAbbreviation());
+                PlayerDTO p = new PlayerDTO(player.getPlayerId(), player.getFirstName(), player.getLastName(), teamDTO,
                         player.getPositions());
                 for (Position pos : p.getPositions()) {
                     if (pos.getAbbreviation().equals("GK")) {
@@ -73,9 +76,10 @@ public class TournamentHelper {
                     }
                 }
             }
-            for (Player player : playerService.getPlayersByTeamId(0, game.getTeamHome().getTeamId())) {
+            for (Player player : playerService.getPlayersByTeamId(0, game.getTeamAway().getTeamId())) {
                 player.setPositions(new ArrayList<Position>(playerService.getPlayerPosition(player.getPlayerId())));
-                PlayerDTO p = new PlayerDTO(player.getPlayerId(), player.getFirstName(), player.getLastName(),
+                TeamDTO teamDTO = new TeamDTO(game.getTeamAway().getDisplayName(), game.getTeamAway().getAbbreviation());
+                PlayerDTO p = new PlayerDTO(player.getPlayerId(), player.getFirstName(), player.getLastName(), teamDTO,
                         player.getPositions());
                 for (Position pos : p.getPositions()) {
                     if (pos.getAbbreviation().equals("GK")) {

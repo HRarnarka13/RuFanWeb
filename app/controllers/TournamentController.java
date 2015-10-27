@@ -163,10 +163,10 @@ public class TournamentController extends Controller {
 
             List<Player> players = new ArrayList<Player>();
             for(Game game : games) {
-                for (Player player : playerService.getPlayersByTeamAbbreviation(0, game.getTeamHome().getAbbreviation())) {
+                for (Player player : playerService.getPlayersByTeamId(0, game.getTeamHome().getTeamId())) {
                     players.add(player);
                 }
-                for (Player player : playerService.getPlayersByTeamAbbreviation(0, game.getTeamHome().getAbbreviation())) {
+                for (Player player : playerService.getPlayersByTeamId(0, game.getTeamHome().getTeamId())) {
                     players.add(player);
                 }
             }

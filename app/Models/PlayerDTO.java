@@ -15,20 +15,32 @@ public class PlayerDTO {
     private int playerid;
     private String firstname;
     private String lastname;
+    private TeamDTO teamDTO;
     private List<Position> positions;
 
-    public PlayerDTO(int playerid, String firstname, String lastname) {
+
+    public PlayerDTO(int playerid, String firstname, String lastname, TeamDTO teamDTO) {
         this.playerid = playerid;
         this.firstname = firstname;
         this.lastname = lastname;
+        this.teamDTO = teamDTO;
         positions = new ArrayList<Position>();
     }
 
-    public PlayerDTO(int playerid, String firstname, String lastname, List<Position> positions) {
+    public PlayerDTO(int playerid, String firstname, String lastname, TeamDTO teamDTO, List<Position> positions) {
         this.playerid = playerid;
         this.firstname = firstname;
         this.lastname = lastname;
+        this.teamDTO = teamDTO;
         this.positions = positions;
+    }
+
+    public TeamDTO getTeamDTO() {
+        return teamDTO;
+    }
+
+    public void setTeamDTO(TeamDTO teamDTO) {
+        this.teamDTO = teamDTO;
     }
 
     public int getPlayerid() {
