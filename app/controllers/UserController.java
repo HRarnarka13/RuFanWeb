@@ -23,6 +23,12 @@ public class UserController extends Controller
     protected ApplicationContext ctx = new FileSystemXmlApplicationContext("/conf/userapp.xml");
     final static Form<User> profileFrom = form(User.class);
 
+
+    /**
+     * Get the profile page for a given user. There is both a detail information about the user and
+     * a form to update the information.
+     * @return the user's profile page
+     */
     public Result blank() {
 
         UserService userService = (UserService) ctx.getBean("userService");
@@ -32,11 +38,11 @@ public class UserController extends Controller
         User user = userService.getUserByUsername(session().get("username"));
 
         if (user == null) {
+            // Render the login form agian if the user is not found by this user
             return ok(login.render(profileFrom));
         }
 
         // Get users favorite team.
-        //
         Team team = teamService.getTeamByAbbrivation(user.getFav_teamabb());
         return ok(profile.render(user, team, teamService.getTeams(), profileFrom));
     }
