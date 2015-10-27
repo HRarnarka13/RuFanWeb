@@ -3,8 +3,10 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-       <bean id="userService" class="is.rufan.user.service.UserServiceData"/>
-       <bean id="teamService" class="is.rufan.team.service.TeamServiceData"></bean>
-       <bean id="tournamentService" class="is.rufan.tournament.service.TournamentServiceData"></bean>
+    <bean id="userService" class="is.rufan.user.service.UserServiceData"></bean>
+    <bean id="playerService" class="is.rufan.player.service.PlayerServiceData"></bean>
+    <bean id="teamService" class="is.rufan.team.service.TeamServiceData"></bean>
+    <bean id="gameService" class="is.rufan.team.service.GameServiceData"></bean>
+    <bean id="tournamentService" class="is.rufan.tournament.service.TournamentServiceData"></bean>
 
 </beans>

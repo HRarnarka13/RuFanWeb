@@ -1,5 +1,47 @@
-@(tournament: is.rufan.tournament.domain.Tournament)
+@(tournament: is.rufan.tournament.domain.Tournament, games: List[is.rufan.team.domain.Game])
 
 @main(tournament.getName(), nav = "signup") {
 
+    <div class="col-md-9">
+        <dl class="dl-horizontal">
+            <dt>Entry fee</dt>
+            <dd>@tournament.getEntryFee()</dd>
+
+            <dt>Start time</dt>
+            <dd>@tournament.getStartTime()<dd>
+
+            <dt>End time</dt>
+            <dd>@tournament.getEndTime()</dd>
+
+            <dt>Max entries</dt>
+            <dd>@tournament.getMaxEntries()</dd>
+
+            <dt>Games</dt>
+            <dd>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Home team</th>
+                            <th>Away team</th>
+                            <th>Venue</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(game <- games) {
+                        <tr>
+                            <td>@game.getTeamHome.getDisplayName</td>
+                            <td>@game.getTeamAway.getDisplayName</td>
+                            <td>@game.getVenue.getName</td>
+                            <td>@game.getStartTime</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </dd>
+        </dl>
+    </div>
+    <div class="col-md-3">
+        <a href="TODO" class="btn btn-lg btn-primary col-md-12">Entroll</a>
+    </div>
 }

@@ -21,7 +21,7 @@
           <ul class="nav navbar-nav">
           @if(session.get("username")) {
             <li>
-              <a href="TODO">Tournaments</a>
+              <a href="@routes.TournamentController.getActiveTournaments()">Tournaments</a>
             </li>
             <li>
               <a href="@routes.UserController.blank()">Profile</a>

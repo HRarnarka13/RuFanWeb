@@ -1,28 +1,44 @@
-@(tournamentForm: Form[is.rufan.tournament.domain.Tournament])
+@(tournamentForm: Form[is.rufan.tournament.domain.Tournament], games: List[is.rufan.team.domain.Game])
 
 @import helper._
 
 @main(title = "Tournament", nav = "tournament") {
     @helper.form(action = routes.TournamentController.addTournament()) {
         <fieldset>
-            <legend>Tournament details</legend>
+            @*<legend>Tournament details</legend>*@
             @inputText(
                 tournamentForm("name"),
-                '_label -> "name"
+                '_label -> "Name",
+                '_error -> tournamentForm.globalError
             )
-
             @inputText(
                 tournamentForm("entry_fee"),
-                '_label -> "Entry fee"
+                '_label -> "Entry fee",
+                '_error -> tournamentForm.globalError
             )
             @inputText(
                 tournamentForm("maxentries"),
-                '_label -> "Max entries"
+                '_label -> "Max entries",
+                '_error -> tournamentForm.globalError
             )
+
+            <dl id="tournamentGames_field">
+                <dt>
+                    <label for="tournamentGames[]">Select games for the tournment</label>
+                </dt>
+                <dd>
+                    <select id="tournamentGames" name="tournamentGames[]" multiple="multiple" class="form-control">
+                    @for(game <- games) {
+                        <option value="@game.getGameId">@game.getTeamHome().getDisplayName() vs. @game.getTeamAway().getDisplayName()</option>
+                    }
+                    </select>
+                </dd>
+            </dl>
+
         </fieldset>
 
         <div class="actions">
-            <input type="submit" class="btn primary" value="Login">
+            <input type="submit" class="btn primary" value="Create">
             <a href="@routes.Application.index" class="btn">Cancel</a>
         </div>
     }
