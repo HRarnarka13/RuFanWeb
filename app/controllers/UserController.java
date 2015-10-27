@@ -49,7 +49,7 @@ public class UserController extends Controller
 
     /**
      * This method is called when a user sends a post method to update his/her user information
-     * @return
+     * @return updated profile view
      */
     public Result updateUser() {
 

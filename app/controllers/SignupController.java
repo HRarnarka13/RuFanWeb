@@ -18,11 +18,19 @@ public class SignupController extends AccountController {
     final static Form<UserRegistration> signupForm = form(UserRegistration.class);
     final static Form<User> updateForm = form(User.class);
 
+    /**
+     * Returns a sign up form for the user to fill out
+     * @return a view containing the sign up form
+     */
     public Result blank() {
         TeamService teamService = (TeamService) ctx.getBean("teamService");
         return ok(signup.render(signupForm, teamService.getTeams()));
     }
 
+    /**
+     *
+     * @return
+     */
     public Result signup() {
         Form<UserRegistration> filledForm = signupForm.bindFromRequest();
 

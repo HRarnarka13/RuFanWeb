@@ -1,5 +1,8 @@
-@()
-
-@main(title = "My fantasy teams", nav = "myfantasyteams") {
-
+@(teams: List[is.rufan.tournament.domain.FantasyTeam])
+@main("Hello", nav = "signup") {
+    @for(team <- teams){
+        <tr>
+            <td>@team.getFantasyTeamId</td>
+        </tr>
+    }
 }

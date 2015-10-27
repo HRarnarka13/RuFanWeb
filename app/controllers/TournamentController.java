@@ -54,11 +54,29 @@ public class TournamentController extends Controller {
         fantasyTeamService = (FantasyTeamService) ctx.getBean("fantasyTeamService");
     }
 
+    /**
+     * Returns a list of all active tournaments in the system
+     * @return all active tournaments
+     */
     public Result getActiveTournaments() {
         List<Tournament> tournamentList = tournamentService.getActiveTournaments();
         return ok(tournaments.render(tournamentList));
     }
 
+    /**
+     * Renders a form to create a new tournament.
+     * @return a create new tournament form.
+     */
+    public Result blank() {
+        List<Game> games = gameService.getGames();
+        return ok(newtournament.render(tournamentForm, games));
+    }
+
+    /**
+     * Gets a specific tournament
+     * @param tournamentid the tournament to be returned
+     * @return a view containing details about the tournament
+     */
     public Result getTournamentById(int tournamentid) {
 
         Tournament t = tournamentService.getTournamentById(tournamentid);
@@ -90,15 +108,6 @@ public class TournamentController extends Controller {
         SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
         return ok(tournament.render(t, games, fantasy_players.isEmpty() ? null : fantasy_players, available_players,
                 fantasyTeamForm));
-    }
-
-    /**
-     * Renders a form to create a new tournament.
-     * @return a create new tournament form.
-     */
-    public Result blank() {
-        List<Game> games = gameService.getGames();
-        return ok(newtournament.render(tournamentForm, games));
     }
 
     /**
@@ -188,6 +197,12 @@ public class TournamentController extends Controller {
             return ok(tournament.render(newTournament, games, null, available_players, fantasyTeamForm));
         }
     }
+
+    /**
+     * This method gets called when a user enrolls his fantasy team to a fantasy tournament
+     * @param tournamentid The Id of the tournament to add the team to
+     * @return a view containing the enrolled team
+     */
 
     public Result enroll(int tournamentid) {
         Form<FantasyTeamViewModel> filledForm = fantasyTeamForm.bindFromRequest();

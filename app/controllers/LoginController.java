@@ -21,6 +21,10 @@ public class LoginController extends AccountController
     return ok(login.render(loginForm));
   }
 
+  /**
+   * This method is called when a User logs in
+   * @return a login form
+   */
   public Result login()
   {
     Form<User> filledForm = loginForm.bindFromRequest();
@@ -52,6 +56,10 @@ public class LoginController extends AccountController
       return redirect("/");
   }
 
+  /**
+   * Clears the sessions and logs the user out. Redirects to front page
+   * @return front page
+   */
   public Result logout()
   {
     session().clear();
