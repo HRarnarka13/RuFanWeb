@@ -90,7 +90,7 @@ public class TournamentController extends Controller {
         }
 
         SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
-        return ok(tournament.render(t, games, fantasy_players, available_players));
+        return ok(tournament.render(t, games, fantasy_players.isEmpty() ? null : fantasy_players, available_players));
     }
 
     public Result blank() {

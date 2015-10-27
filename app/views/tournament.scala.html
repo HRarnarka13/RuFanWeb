@@ -42,7 +42,7 @@
                     </tbody>
                 </table>
             </dd>
-            @if(fantasy_players != null || !fantasy_players.isEmpty) {
+            @if(fantasy_players != null ) {
                 <dt>Players</dt>
                 <dd>
                     <table class="table">
@@ -73,16 +73,84 @@
             } else {
                 <dt>Pick players</dt>
                 <dd>
-                    <select name="goalkeeper">
-                        @for(player <- select_players.getGK) {
+                    <div class="row">
+                        <h3>Goalkeeper</h3>
+                        <select name="goalkeeper">
+                            <option value=""></option>
+                            @for(player <- select_players.getGK) {
+                                <option value="@player.getPlayerid">@player.getFirstname @player.getLastname</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="row">
+                        <h3>Defenders</h3>
+                        <select name="defender">
+                            <option value=""></option>
+                            @for(player <- select_players.getD) {
                             <option value="@player.getPlayerid">@player.getFirstname @player.getLastname</option>
                         }
-                    </select>
-                    <select name="defender">
-                    @for(player <- select_players.getD) {
-                        <option value="@player.getPlayerid">@player.getFirstname @player.getLastname</option>
-                    }
-                    </select>
+                        </select>
+                        <select name="defender">
+                            <option value=""></option>
+                            @for(player <- select_players.getD) {
+                            <option value="@player.getPlayerid">@player.getFirstname @player.getLastname</option>
+                        }
+                        </select>
+                        <select name="defender">
+                            <option value=""></option>
+                            @for(player <- select_players.getD) {
+                            <option value="@player.getPlayerid">@player.getFirstname @player.getLastname</option>
+                        }
+                        </select>
+                        <select name="defender">
+                            <option value=""></option>
+                            @for(player <- select_players.getD) {
+                            <option value="@player.getPlayerid">@player.getFirstname @player.getLastname</option>
+                        }
+                        </select>
+                    </div>
+                    <div class="row">
+                        <h3>Midfielders</h3>
+                        <select name="medfileder">
+                            <option value=""></option>
+                            @for(player <- select_players.getM) {
+                            <option value="@player.getPlayerid">@player.getFirstname @player.getLastname</option>
+                        }
+                        </select>
+                        <select name="medfileder">
+                            <option value=""></option>
+                            @for(player <- select_players.getM) {
+                            <option value="@player.getPlayerid">@player.getFirstname @player.getLastname</option>
+                        }
+                        </select>
+                        <select name="medfileder">
+                            <option value=""></option>
+                            @for(player <- select_players.getM) {
+                            <option value="@player.getPlayerid">@player.getFirstname @player.getLastname</option>
+                        }
+                        </select>
+                        <select name="medfileder">
+                            <option value=""></option>
+                            @for(player <- select_players.getM) {
+                            <option value="@player.getPlayerid">@player.getFirstname @player.getLastname</option>
+                        }
+                        </select>
+                    </div>
+                    <div class="row">
+                        <h3>Strikers</h3>
+                        <select name="strikers">
+                            <option value=""></option>
+                            @for(player <- select_players.getF) {
+                            <option value="@player.getPlayerid">@player.getFirstname @player.getLastname</option>
+                        }
+                        </select>
+                        <select name="strikers">
+                            <option value=""></option>
+                        @for(player <- select_players.getF) {
+                            <option value="@player.getPlayerid">@player.getFirstname @player.getLastname</option>
+                        }
+                        </select>
+                    </div>
                 </dd>
             }
         </dl>
