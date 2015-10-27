@@ -1,6 +1,6 @@
 @(tournament: is.rufan.tournament.domain.Tournament,
         games: List[is.rufan.team.domain.Game],
-        fantasy_players : List[is.rufan.player.domain.Player],
+        fantasy_players : List[Models.PlayerDTO],
         select_players : Models.SelectPlayersDTO,
         fantasyTeamFrom : Form[Models.FantasyTeamViewModel])
 
@@ -61,7 +61,7 @@
                     <tbody>
                     @for(player <- fantasy_players) {
                         <tr>
-                            <td>@player.getFirstName @player.getLastName </td>
+                            <td>@player.getFirstname @player.getLastname </td>
                             <td>
                                 <ul>
                                     @for(pos <- player.getPositions) {
@@ -69,7 +69,7 @@
                                     }
                                 </ul>
                             </td>
-                            <td>Liverpool</td>
+                            <td>@player.getTeamDTO.getName</td>
                         </tr>
                     }
                     </tbody>
@@ -170,7 +170,7 @@
                     </div>
                 </div>
                 <div class="actions">
-                    <input type="submit" class="btn primary" value="Join tournament">
+                    <input type="submit" class="btn primary" value="Enter tournament">
                     <a href="@routes.Application.index" class="btn">Cancel</a>
                 </div>
             }
