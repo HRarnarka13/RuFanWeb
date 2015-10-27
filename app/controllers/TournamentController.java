@@ -215,33 +215,39 @@ public class TournamentController extends Controller {
      */
     public Result enroll(int tournamentid) {
         Form<FantasyTeamViewModel> filledForm = fantasyTeamForm.bindFromRequest();
-        if (filledForm.hasErrors()) {
-            return redirect(routes.TournamentController.getTournamentById(tournamentid));
-        } else {
-            FantasyTeamViewModel fantasyTeamForm = filledForm.get();
-            List<Integer> fantasyTeamPlayers = new ArrayList<Integer>();
 
+        Tournament tournament = tournamentService.getTournamentById(tournamentid);
+        List<Game> games = new ArrayList<Game>();
+        for (Integer gameid : tournamentService.getTournamentGames(tournamentid)) {
+            games.add(gameService.getGame(gameid));
+        }
+        SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
+        if (filledForm.hasErrors()) {
+            filledForm.reject("Bad request");
+            return badRequest(views.html.tournament.render(tournament,games, null, available_players,
+                    fantasyTeamForm));
+        } else {
+            FantasyTeamViewModel ftForm = filledForm.get();
+            List<Integer> fantasyTeamPlayers = new ArrayList<Integer>();
             // Check if there are duplicates in the list
             Set<Integer> set = new HashSet<Integer>(fantasyTeamPlayers);
             if(set.size() < fantasyTeamPlayers.size()){
-                Tournament tournament = tournamentService.getTournamentById(tournamentid);
-
-                // return badRequest(tournament.render(tournamentService.getTournamentById(tournamentid), ))
+                return badRequest(views.html.tournament.render(tournament,games, null, available_players,
+                        fantasyTeamForm));
             }
 
-
             // region add every fantasy team player to a list
-            fantasyTeamPlayers.add(fantasyTeamForm.goalkeeper);
-            fantasyTeamPlayers.add(fantasyTeamForm.defender1);
-            fantasyTeamPlayers.add(fantasyTeamForm.defender2);
-            fantasyTeamPlayers.add(fantasyTeamForm.defender3);
-            fantasyTeamPlayers.add(fantasyTeamForm.defender4);
-            fantasyTeamPlayers.add(fantasyTeamForm.midfielder1);
-            fantasyTeamPlayers.add(fantasyTeamForm.midfielder2);
-            fantasyTeamPlayers.add(fantasyTeamForm.midfielder3);
-            fantasyTeamPlayers.add(fantasyTeamForm.midfielder4);
-            fantasyTeamPlayers.add(fantasyTeamForm.striker1);
-            fantasyTeamPlayers.add(fantasyTeamForm.striker2);
+            fantasyTeamPlayers.add(ftForm.goalkeeper);
+            fantasyTeamPlayers.add(ftForm.defender1);
+            fantasyTeamPlayers.add(ftForm.defender2);
+            fantasyTeamPlayers.add(ftForm.defender3);
+            fantasyTeamPlayers.add(ftForm.defender4);
+            fantasyTeamPlayers.add(ftForm.midfielder1);
+            fantasyTeamPlayers.add(ftForm.midfielder2);
+            fantasyTeamPlayers.add(ftForm.midfielder3);
+            fantasyTeamPlayers.add(ftForm.midfielder4);
+            fantasyTeamPlayers.add(ftForm.striker1);
+            fantasyTeamPlayers.add(ftForm.striker2);
             // endregion
 
             User user = userService.getUserByUsername(session().get("username"));

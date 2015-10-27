@@ -77,6 +77,11 @@
             </div>
         } else {
             @helper.form(action = routes.TournamentController.enroll(tournament.getTournamentid)) {
+                @if(fantasyTeamFrom.hasErrors) {
+                    <div class="alert alert-danger col-lg-6 text-center">
+                        Please fill out every position and please select a given player only once.
+                    </div>
+                }
                 <div class="col-md-12">
                     <h2>Pick players</h2>
                     <div class="row">
