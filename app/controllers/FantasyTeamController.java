@@ -6,6 +6,7 @@ import Models.TeamDTO;
 import Models.TournamentDTO;
 import is.rufan.player.domain.Player;
 import is.rufan.player.domain.Position;
+import is.rufan.player.service.FantasyPointService;
 import is.rufan.player.service.PlayerService;
 import is.rufan.team.domain.Team;
 import is.rufan.team.service.GameService;
@@ -42,6 +43,7 @@ public class FantasyTeamController extends Controller {
     FantasyPlayerService fantasyPlayerService;
     TournamentService tournamentService;
     UserService userService;
+    FantasyPointService fantasyPointService;
 
     public FantasyTeamController() {
         teamService = (TeamService) ctx.getBean("teamService");
@@ -51,6 +53,7 @@ public class FantasyTeamController extends Controller {
         fantasyPlayerService = (FantasyPlayerService) ctx.getBean("fantasyPlayerService");
         tournamentService = (TournamentService) ctx.getBean("tournamentService");
         userService = (UserService) ctx.getBean("userService");
+        fantasyPointService = (FantasyPointService) ctx.getBean("fantasyPointService");
     }
 
 
@@ -61,7 +64,6 @@ public class FantasyTeamController extends Controller {
     public Result getFantasyTeams() {
         User user = userService.getUserByUsername(session().get("username"));
         List<FantasyTeam> teams = fantasyTeamService.getFantasyTeamByUserId(user.getId());
-
         List<TournamentDTO> tournaments = new ArrayList<TournamentDTO>();
         for(Tournament tournament : tournamentService.getActiveTournaments()) {
             List<FantasyTeam> fantasyTeams = tournamentService.getFantasyTeamsByTournamentId(tournament.getTournamentid());
