@@ -9,15 +9,14 @@ import is.rufan.team.domain.Game;
 import is.rufan.team.domain.Team;
 import is.rufan.team.service.GameService;
 import is.rufan.team.service.TeamService;
-import is.rufan.tournament.domain.FantasyTeam;
-import is.rufan.tournament.domain.Tournament;
-import is.rufan.tournament.domain.TournamentEnrollment;
+import is.rufan.tournament.domain.*;
+import is.rufan.tournament.service.FantasyPlayer.FantasyPlayerService;
+import is.rufan.tournament.service.FantasyPoint.FantasyPointService;
 import is.rufan.tournament.service.FantasyTeam.FantasyTeamService;
 import is.rufan.tournament.service.Tournament.TournamentService;
 import is.rufan.user.domain.User;
 import is.rufan.user.service.UserService;
 import org.apache.commons.lang3.time.DateUtils;
-import org.h2.mvstore.DataUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import play.data.Form;
@@ -47,6 +46,8 @@ public class TournamentController extends Controller {
     UserService userService;
     PlayerService playerService;
     FantasyTeamService fantasyTeamService;
+    FantasyPlayerService fantasyPlayerService;
+    FantasyPointService fantasyPointService;
 
     public TournamentController() {
         tournamentService = (TournamentService) ctx.getBean("tournamentService");
@@ -55,6 +56,8 @@ public class TournamentController extends Controller {
         userService = (UserService) ctx.getBean("userService");
         playerService = (PlayerService) ctx.getBean("playerService");
         fantasyTeamService = (FantasyTeamService) ctx.getBean("fantasyTeamService");
+        fantasyPlayerService = (FantasyPlayerService) ctx.getBean("fantasyPlayerService");
+        fantasyPointService = (FantasyPointService) ctx.getBean("fantasyPointService");
     }
 
     /**
@@ -259,5 +262,31 @@ public class TournamentController extends Controller {
             tournamentService.addEnrollment(tournamentid, fantasy_teamid);
             return redirect(routes.TournamentController.getTournamentById(tournamentid));
         }
+    }
+
+    public Result calculatePointsForTournament(int tournamentid) {
+
+        Tournament tournament = tournamentService.getTournamentById(tournamentid); // Get the tournament
+        // Loop through every entollment in the tournament
+        for (TournamentEnrollment enrollment : tournament.getEnrollments()) {
+            FantasyTeam fantasyTeam = fantasyTeamService.getFantasyTeam(enrollment.getTeamId());
+            if (fantasyTeam.isOpen()) {
+                // Get the a list of the fantasy players in the current fantasy team
+                List<FantasyPlayer> fantasy_players = fantasyPlayerService
+                        .getFantasyPlayersByTeamId(fantasyTeam.getFantasyTeamId());
+
+                double score = 0.0;
+                // For each player get his score and sum the scores up
+                for (FantasyPlayer fantasyPlayer : fantasy_players) {
+                    FantasyPoint fantasyPoint = fantasyPointService.getFantasyPointByPlayerId(fantasyPlayer.getPlayerid());
+                    score += fantasyPoint.getFantasyPoints();
+                }
+                enrollment.setScore(score); // update the score
+                fantasyTeam.setIsOpen(false); // close the fantasy team
+            }
+            tournament.setStatus(false); // close the tournament
+        }
+        
+        return ok();
     }
 }
