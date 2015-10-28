@@ -296,6 +296,7 @@ public class TournamentController extends Controller {
                     }
                 }
                 enrollment.setScore(score); // update the score
+                tournamentService.setScore(tournamentid, fantasyTeam.getFantasyTeamId(), score);
 
                 if (winner.getScore() < score) {
                     winner = enrollment; // update the winner
