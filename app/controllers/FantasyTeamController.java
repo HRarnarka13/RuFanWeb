@@ -5,6 +5,7 @@ import Models.PlayerDTO;
 import Models.TeamDTO;
 import Models.TournamentDTO;
 import is.rufan.player.domain.Player;
+import is.rufan.player.domain.Position;
 import is.rufan.player.service.PlayerService;
 import is.rufan.team.domain.Team;
 import is.rufan.team.service.GameService;
@@ -66,14 +67,16 @@ public class FantasyTeamController extends Controller {
             List<FantasyTeam> fantasyTeams = tournamentService.getFantasyTeamsByTournamentId(tournament.getTournamentid());
             for (FantasyTeam t : fantasyTeams) {
                 if(t.getUserId() == user.getId()){
-                    TournamentDTO tournamentDTO = new TournamentDTO(tournament.getEntryFee(), tournament.getMaxEntries(), tournament.getStartTime(), tournament.getEndTime());
+                    TournamentDTO tournamentDTO = new TournamentDTO(tournament.getEntryFee(), tournament.getMaxEntries(), tournament.getStartTime(), tournament.getEndTime(), tournament.getName());
                     List<FantasyPlayer> teamPlayers = fantasyPlayerService.getFantasyPlayersByTeamId(t.getFantasyTeamId());
                     List<PlayerDTO> players = new ArrayList<PlayerDTO>();
                     for(FantasyPlayer fp : teamPlayers){
                         Player player = playerService.getPlayer(fp.getPlayerid());
-                        Team team = teamService.getTeamById(t.getFantasyTeamId());
+                        player.setPositions(new ArrayList<Position>(playerService.getPlayerPosition(fp.getPlayerid())));
+
+                        Team team = teamService.getTeamById(player.getTeamId());
                         TeamDTO teamDTO = new TeamDTO(team.getDisplayName(), team.getAbbreviation());
-                        PlayerDTO playerDTO = new PlayerDTO(player.getPlayerId(), player.getFirstName(), player.getLastName(), teamDTO);
+                        PlayerDTO playerDTO = new PlayerDTO(player.getPlayerId(), player.getFirstName(), player.getLastName(), teamDTO, player.getPositions());
                         players.add(playerDTO);
                     }
                     tournamentDTO.setAvailable_players(players);

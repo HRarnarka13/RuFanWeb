@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 public class TournamentDTO {
-
+    private String tournamentName;
     private double entry_fee;
     private int maxentries;
     private Date start_time;
@@ -19,13 +19,23 @@ public class TournamentDTO {
     private List<GameDTO> games;
     private List<PlayerDTO> available_players;
 
-    public TournamentDTO(double entry_fee, int maxentries, Date start_time, Date end_time) {
+
+
+    public TournamentDTO(double entry_fee, int maxentries, Date start_time, Date end_time, String tournamentName) {
         this.entry_fee = entry_fee;
         this.maxentries = maxentries;
         this.start_time = start_time;
         this.end_time = end_time;
+        this.tournamentName = tournamentName;
+
+    }
+    public String getTournamentName() {
+        return tournamentName;
     }
 
+    public void setTournamentName(String tournamentName) {
+        this.tournamentName = tournamentName;
+    }
     public void addGame(GameDTO game) {
         games.add(game);
     }
