@@ -1,0 +1,22 @@
+@(tournament: is.rufan.tournament.domain.Tournament,
+        winner: is.rufan.user.domain.User,
+        winnerScore: Double,
+        numberOfParticipants: Integer);
+
+@main(tournament.getName(), nav = "signup") {
+
+    <dl class="dl-horizontal">
+        <dt>Winner:</dt>
+        <dd>@winner.getName</dd>
+
+        <dt>Winner score: </dt>
+        <dd>@winnerScore</dd>
+
+        <dt>Winner email:</dt>
+        <dd><a href="mailto:@winner.getEmail">@winner.getEmail></a></dd>
+
+        <dt>Number of participants</dt>
+        <dd>@numberOfParticipants</dd>
+    </dl>
+
+}

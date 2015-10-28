@@ -3,31 +3,32 @@
 # ~~~~
 
 # Home page
-GET         /                                             controllers.Application.index()
-GET         /signup                                       controllers.SignupController.blank()
-POST        /signup                                       controllers.SignupController.signup()
-GET         /login                                        controllers.LoginController.blank()
-POST        /login                                        controllers.LoginController.login()
-GET         /logout                                       controllers.LoginController.logout()
+GET         /                                       controllers.Application.index()
+GET         /signup                                 controllers.SignupController.blank()
+POST        /signup                                 controllers.SignupController.signup()
+GET         /login                                  controllers.LoginController.blank()
+POST        /login                                  controllers.LoginController.login()
+GET         /logout                                 controllers.LoginController.logout()
 
 
 # User
-GET         /profile                                      controllers.UserController.blank()
-POST        /profile                                      controllers.UserController.updateUser()
+GET         /profile                                controllers.UserController.blank()
+POST        /profile                                controllers.UserController.updateUser()
 
 
 # Tournament
-GET         /tournaments                                  controllers.TournamentController.getActiveTournaments()
-GET         /tournaments/:tournamentid                    controllers.TournamentController.getTournamentById(tournamentid:Integer)
-GET         /add_tournaments                              controllers.TournamentController.blank()
-POST        /tournaments                                  controllers.TournamentController.addTournament()
-POST        /tournaments/:tournamentid/enrollments        controllers.TournamentController.enroll(tournamentid:Integer)
+GET         /tournaments                            controllers.TournamentController.getActiveTournaments()
+GET         /tournaments/:tournamentid              controllers.TournamentController.getTournamentById(tournamentid:Integer)
+GET         /add_tournaments                        controllers.TournamentController.blank()
+POST        /tournaments                            controllers.TournamentController.addTournament()
+POST        /tournaments/:tournamentid/enrollments  controllers.TournamentController.enroll(tournamentid:Integer)
+GET         /tournaments/:tournamentid/winner       controllers.TournamentController.calculatePointsForTournament(tournamentid:Integer)
 
 # My Fantasy Teams
-GET         /myfantasyteams                               controllers.FantasyTeamController.getFantasyTeams()
+GET         /myfantasyteams                         controllers.FantasyTeamController.getFantasyTeams()
 
 
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                                 controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                           controllers.Assets.versioned(path="/public", file: Asset)
 

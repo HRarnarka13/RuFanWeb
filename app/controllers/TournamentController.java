@@ -23,6 +23,7 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.newtournament;
+import views.html.tournamentOver;
 import views.html.tournaments;
 import views.html.tournament;
 
@@ -268,6 +269,9 @@ public class TournamentController extends Controller {
 
         Tournament tournament = tournamentService.getTournamentById(tournamentid); // Get the tournament
         // Loop through every entollment in the tournament
+
+        TournamentEnrollment winner = new TournamentEnrollment(0,0, 0.0);
+
         for (TournamentEnrollment enrollment : tournament.getEnrollments()) {
             FantasyTeam fantasyTeam = fantasyTeamService.getFantasyTeam(enrollment.getTeamId());
             if (fantasyTeam.isOpen()) {
@@ -278,15 +282,34 @@ public class TournamentController extends Controller {
                 double score = 0.0;
                 // For each player get his score and sum the scores up
                 for (FantasyPlayer fantasyPlayer : fantasy_players) {
-                    FantasyPoint fantasyPoint = fantasyPointService.getFantasyPointByPlayerId(fantasyPlayer.getPlayerid());
+                    FantasyPoint fantasyPoint = fantasyPointService
+                            .getFantasyPointByPlayerId(fantasyPlayer.getPlayerid());
                     score += fantasyPoint.getFantasyPoints();
                 }
                 enrollment.setScore(score); // update the score
+
+                if (winner.getScore() < score) {
+                    winner = enrollment; // update the winner
+                }
+
                 fantasyTeam.setIsOpen(false); // close the fantasy team
             }
             tournament.setStatus(false); // close the tournament
         }
-        
-        return ok();
+
+        // If we did not findd a winner
+        if (winner.getScore() == 0) {
+            return ok();
+        }
+
+        // Find the user.
+        FantasyTeam bestTeam = fantasyTeamService.getFantasyTeam(winner.getTeamId());
+        User user = userService.getUser(bestTeam.getUserId());
+        if (user == null) {
+            return badRequest();
+        }
+
+        // return the user who won, his score and number of participants.
+        return ok(tournamentOver.render(tournament, user, winner.getScore(), tournament.getEnrollments().size()));
     }
 }
