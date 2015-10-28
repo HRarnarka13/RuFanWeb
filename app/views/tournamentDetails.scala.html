@@ -90,79 +90,86 @@
                 <div class="col-md-12">
                     <h2>Pick players</h2>
                     <div class="row">
-                        <h3>Goalkeeper</h3>
-                        <select name="goalkeeper">
-                            <option value="">Select a goalkeeper</option>
-                            @for(player <- select_players.getGK) {
-                                <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
-                                    - @player.getTeamDTO.getName</option>
-                            }
-                        </select>
+                        <h3 class="text-center">Goalkeeper</h3>
+                        <div class="col-md-offset-5">
+                            <select name="goalkeeper">
+                                <option value="">Select a goalkeeper</option>
+                                @for(player <- select_players.getGK) {
+                                    <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
+                                        - @player.getTeamDTO.getName</option>
+                                }
+                            </select>
+                        </div>
                     </div>
                     <div class="row">
-                        <h3>Defenders</h3>
-                        <select name="defender1">
-                            <option value="">Select a defender</option>
-                            @for(player <- select_players.getD) {
-                                <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
-                                    - @player.getTeamDTO.getName</option>
-                            }
-                        </select>
-                        <select name="defender2">
-                            <option value="">Select a defender</option>
-                            @for(player <- select_players.getD) {
-                                <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
-                                    - @player.getTeamDTO.getName</option>
-                            }
-                        </select>
-                        <select name="defender3">
-                            <option value="">Select a defender</option>
-                            @for(player <- select_players.getD) {
-                                <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
-                                    - @player.getTeamDTO.getName</option>
-                            }
-                        </select>
-                        <select name="defender4">
-                            <option value="">Select a defender</option>
-                            @for(player <- select_players.getD) {
-                                <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
-                                    - @player.getTeamDTO.getName</option>
-                            }
-                        </select>
+                        <h3 class="text-center">Defenders</h3>
+                        <div class="col-md-offset-1">
+                            <select name="defender1">
+                                <option value="">Select a defender</option>
+                                @for(player <- select_players.getD) {
+                                    <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
+                                        - @player.getTeamDTO.getName</option>
+                                }
+                            </select>
+                            <select name="defender2">
+                                <option value="">Select a defender</option>
+                                @for(player <- select_players.getD) {
+                                    <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
+                                        - @player.getTeamDTO.getName</option>
+                                }
+                            </select>
+                            <select name="defender3">
+                                <option value="">Select a defender</option>
+                                @for(player <- select_players.getD) {
+                                    <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
+                                        - @player.getTeamDTO.getName</option>
+                                }
+                            </select>
+                            <select name="defender4">
+                                <option value="">Select a defender</option>
+                                @for(player <- select_players.getD) {
+                                    <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
+                                        - @player.getTeamDTO.getName</option>
+                                }
+                            </select>
+                        </div>
                     </div>
                     <div class="row">
-                        <h3>Midfielders</h3>
-                        <select name="midfielder1">
-                            <option value="">Select a midfielder</option>
-                            @for(player <- select_players.getM) {
-                                <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
-                                    - @player.getTeamDTO.getName</option>
-                            }
-                        </select>
-                        <select name="midfielder2">
-                            <option value="">Select a midfielder</option>
-                            @for(player <- select_players.getM) {
-                                <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
-                                    - @player.getTeamDTO.getName</option>
-                            }
-                        </select>
-                        <select name="midfielder3">
-                            <option value="">Select a midfielder</option>
-                            @for(player <- select_players.getM) {
-                                <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
-                                    - @player.getTeamDTO.getName</option>
-                            }
-                        </select>
-                        <select name="midfielder4">
-                            <option value="">Select a midfielder</option>
-                            @for(player <- select_players.getM) {
-                                <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
-                                    - @player.getTeamDTO.getName</option>
-                            }
-                        </select>
+                        <h3 class="text-center">Midfielders</h3>
+                        <div class="col-md-offset-1">
+                            <select name="midfielder1">
+                                <option value="">Select a midfielder</option>
+                                @for(player <- select_players.getM) {
+                                    <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
+                                        - @player.getTeamDTO.getName</option>
+                                }
+                            </select>
+                            <select name="midfielder2">
+                                <option value="">Select a midfielder</option>
+                                @for(player <- select_players.getM) {
+                                    <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
+                                        - @player.getTeamDTO.getName</option>
+                                }
+                            </select>
+                            <select name="midfielder3">
+                                <option value="">Select a midfielder</option>
+                                @for(player <- select_players.getM) {
+                                    <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
+                                        - @player.getTeamDTO.getName</option>
+                                }
+                            </select>
+                            <select name="midfielder4">
+                                <option value="">Select a midfielder</option>
+                                @for(player <- select_players.getM) {
+                                    <option value="@player.getPlayerid">@player.getFirstname @player.getLastname
+                                        - @player.getTeamDTO.getName</option>
+                                }
+                            </select>
+                        </div>
                     </div>
                     <div class="row">
-                        <h3>Strikers</h3>
+                        <h3 class="text-center">Strikers</h3>
+                        <div class="col-md-offset-4">
                         <select name="striker1">
                             <option value="">Select a striker</option>
                             @for(player <- select_players.getF) {
@@ -177,6 +184,7 @@
                                     - @player.getTeamDTO.getName</option>
                             }
                         </select>
+                        </div>
                     </div>
                 </div>
                 <div class="actions">

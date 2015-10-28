@@ -215,7 +215,7 @@ public class TournamentController extends Controller {
             // Get list of abailable players for the current tournamentDetails
             SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
 
-            return ok(tournamentDetails.render(newTournament, games, null, available_players, fantasyTeamForm));
+            return ok(tournaments.render(tournamentService.getActiveTournaments()));
         }
     }
 
