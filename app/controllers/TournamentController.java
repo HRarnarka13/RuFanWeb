@@ -102,8 +102,11 @@ public class TournamentController extends Controller {
             return redirect(routes.LoginController.blank());
         }
 
-        // Get the fantasy team if the user has already created a fantasy team for the current tournamentDetails
         List<PlayerDTO> fantasy_players = new ArrayList<PlayerDTO>();
+        if (t.getMaxEntries() <= t.getEnrollments().size()) {
+           return ok(tournamentDetails.render(t, games, fantasy_players, null, fantasyTeamForm));
+        }
+        // Get the fantasy team if the user has already created a fantasy team for the current tournamentDetails
         for (TournamentEnrollment te : t.getEnrollments()) {
             // Get the fantasy team for each enrollment
             FantasyTeam ft = fantasyTeamService.getFantasyTeam(te.getTeamId());
@@ -130,7 +133,6 @@ public class TournamentController extends Controller {
         }
 
         return ok(tournamentDetails.render(t, games, fantasy_players, null, fantasyTeamForm));
-
     }
 
     /**
@@ -204,6 +206,11 @@ public class TournamentController extends Controller {
             newTournament.setStartTime(first_game_date);
             newTournament.setEndTime(DateUtils.addHours(last_game_date, 2));
             int tournamentid = tournamentService.addTournament(newTournament);
+
+            if (newTournament.getMaxEntries() == 0) {
+                List<PlayerDTO> fantasy_players = new ArrayList<PlayerDTO>();
+                return ok(tournamentDetails.render(newTournament, games, fantasy_players, null, fantasyTeamForm));
+            }
 
             // Get list of abailable players for the current tournamentDetails
             SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
