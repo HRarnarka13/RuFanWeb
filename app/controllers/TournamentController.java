@@ -284,7 +284,9 @@ public class TournamentController extends Controller {
                 for (FantasyPlayer fantasyPlayer : fantasy_players) {
                     FantasyPoint fantasyPoint = fantasyPointService
                             .getFantasyPointByPlayerId(fantasyPlayer.getPlayerid());
-                    score += fantasyPoint.getFantasyPoints();
+                    if (fantasyPoint != null) {
+                        score += fantasyPoint.getFantasyPoints();
+                    }
                 }
                 enrollment.setScore(score); // update the score
 
