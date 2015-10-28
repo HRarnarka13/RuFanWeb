@@ -90,7 +90,7 @@ public class TournamentController extends Controller {
         if (t == null) {
             return notFound();
         }
-        TournamentDTO tournamentDTO = new TournamentDTO(t.getEntryFee(), t.getMaxEntries(), t.getStartTime(), t.getEndTime(), t.getName());;
+        TournamentDTO tournamentDTO = new TournamentDTO(t.getEntryFee(), t.getMaxEntries(), t.getStartTime(), t.getEndTime(), t.getName(), 0);
 
         List<Game> games = new ArrayList<Game>();
         for (Integer id : tournamentService.getTournamentGames(tournamentid)) {

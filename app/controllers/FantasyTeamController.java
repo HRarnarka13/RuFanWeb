@@ -6,6 +6,8 @@ import Models.TeamDTO;
 import Models.TournamentDTO;
 import is.rufan.player.domain.Player;
 import is.rufan.player.domain.Position;
+import is.rufan.tournament.domain.TournamentEnrollment;
+import is.rufan.tournament.service.FantasyPoint.FantasyPointService;
 import is.rufan.player.service.PlayerService;
 import is.rufan.team.domain.Team;
 import is.rufan.team.service.GameService;
@@ -42,6 +44,8 @@ public class FantasyTeamController extends Controller {
     FantasyPlayerService fantasyPlayerService;
     TournamentService tournamentService;
     UserService userService;
+    FantasyPointService fantasyPointService;
+
 
     public FantasyTeamController() {
         teamService = (TeamService) ctx.getBean("teamService");
@@ -51,6 +55,7 @@ public class FantasyTeamController extends Controller {
         fantasyPlayerService = (FantasyPlayerService) ctx.getBean("fantasyPlayerService");
         tournamentService = (TournamentService) ctx.getBean("tournamentService");
         userService = (UserService) ctx.getBean("userService");
+        fantasyPointService = (FantasyPointService) ctx.getBean("fantasyPointService");
     }
 
 
@@ -61,25 +66,28 @@ public class FantasyTeamController extends Controller {
     public Result getFantasyTeams() {
         User user = userService.getUserByUsername(session().get("username"));
         List<FantasyTeam> teams = fantasyTeamService.getFantasyTeamByUserId(user.getId());
-
         List<TournamentDTO> tournaments = new ArrayList<TournamentDTO>();
-        for(Tournament tournament : tournamentService.getActiveTournaments()) {
+        for(Tournament tournament : tournamentService.getTournaments()) {
             List<FantasyTeam> fantasyTeams = tournamentService.getFantasyTeamsByTournamentId(tournament.getTournamentid());
             for (FantasyTeam t : fantasyTeams) {
                 if(t.getUserId() == user.getId()){
-                    TournamentDTO tournamentDTO = new TournamentDTO(tournament.getEntryFee(), tournament.getMaxEntries(), tournament.getStartTime(), tournament.getEndTime(), tournament.getName());
+                    TournamentDTO tournamentDTO = new TournamentDTO(tournament.getEntryFee(), tournament.getMaxEntries(), tournament.getStartTime(), tournament.getEndTime(), tournament.getName(), 0);
                     List<FantasyPlayer> teamPlayers = fantasyPlayerService.getFantasyPlayersByTeamId(t.getFantasyTeamId());
                     List<PlayerDTO> players = new ArrayList<PlayerDTO>();
                     for(FantasyPlayer fp : teamPlayers){
                         Player player = playerService.getPlayer(fp.getPlayerid());
                         player.setPositions(new ArrayList<Position>(playerService.getPlayerPosition(fp.getPlayerid())));
-
                         Team team = teamService.getTeamById(player.getTeamId());
                         TeamDTO teamDTO = new TeamDTO(team.getDisplayName(), team.getAbbreviation());
                         PlayerDTO playerDTO = new PlayerDTO(player.getPlayerId(), player.getFirstName(), player.getLastName(), teamDTO, player.getPositions());
                         players.add(playerDTO);
                     }
                     tournamentDTO.setAvailable_players(players);
+                    for(TournamentEnrollment te : tournament.getEnrollments()) {
+                        if (te.getTeamId() == t.getFantasyTeamId()) {
+                            tournamentDTO.setScore(te.getScore());
+                        }
+                    }
                     tournaments.add(tournamentDTO);
                 }
             }

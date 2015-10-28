@@ -18,15 +18,23 @@ public class TournamentDTO {
     private Date end_time;
     private List<GameDTO> games;
     private List<PlayerDTO> available_players;
+    private double score;
 
+    public double getScore() {
+        return score;
+    }
 
+    public void setScore(double score) {
+        this.score = score;
+    }
 
-    public TournamentDTO(double entry_fee, int maxentries, Date start_time, Date end_time, String tournamentName) {
+    public TournamentDTO(double entry_fee, int maxentries, Date start_time, Date end_time, String tournamentName, double score) {
         this.entry_fee = entry_fee;
         this.maxentries = maxentries;
         this.start_time = start_time;
         this.end_time = end_time;
         this.tournamentName = tournamentName;
+        this.score = score;
 
     }
     public String getTournamentName() {
