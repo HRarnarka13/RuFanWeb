@@ -65,23 +65,26 @@ public class FantasyTeamController extends Controller {
         User user = userService.getUserByUsername(session().get("username"));
         List<FantasyTeam> teams = fantasyTeamService.getFantasyTeamByUserId(user.getId());
         List<TournamentDTO> tournaments = new ArrayList<TournamentDTO>();
-        for(Tournament tournament : tournamentService.getActiveTournaments()) {
+        double teamScoreSum = 0;
+        for(Tournament tournament : tournamentService.getTournaments()) {
             List<FantasyTeam> fantasyTeams = tournamentService.getFantasyTeamsByTournamentId(tournament.getTournamentid());
             for (FantasyTeam t : fantasyTeams) {
                 if(t.getUserId() == user.getId()){
-                    TournamentDTO tournamentDTO = new TournamentDTO(tournament.getEntryFee(), tournament.getMaxEntries(), tournament.getStartTime(), tournament.getEndTime(), tournament.getName());
+                    TournamentDTO tournamentDTO = new TournamentDTO(tournament.getEntryFee(), tournament.getMaxEntries(), tournament.getStartTime(), tournament.getEndTime(), tournament.getName(), 0);
                     List<FantasyPlayer> teamPlayers = fantasyPlayerService.getFantasyPlayersByTeamId(t.getFantasyTeamId());
                     List<PlayerDTO> players = new ArrayList<PlayerDTO>();
                     for(FantasyPlayer fp : teamPlayers){
                         Player player = playerService.getPlayer(fp.getPlayerid());
                         player.setPositions(new ArrayList<Position>(playerService.getPlayerPosition(fp.getPlayerid())));
-
                         Team team = teamService.getTeamById(player.getTeamId());
                         TeamDTO teamDTO = new TeamDTO(team.getDisplayName(), team.getAbbreviation());
                         PlayerDTO playerDTO = new PlayerDTO(player.getPlayerId(), player.getFirstName(), player.getLastName(), teamDTO, player.getPositions());
                         players.add(playerDTO);
+                        teamScoreSum += fantasyPointService.getFantasyPointByPlayerId(fp.getPlayerid()).getFantasyPoints();
                     }
                     tournamentDTO.setAvailable_players(players);
+                    tournamentDTO.setScore(teamScoreSum);
+                    teamScoreSum = 0;
                     tournaments.add(tournamentDTO);
                 }
             }

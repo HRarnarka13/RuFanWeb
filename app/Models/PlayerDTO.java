@@ -18,7 +18,6 @@ public class PlayerDTO {
     private TeamDTO teamDTO;
     private List<Position> positions;
 
-
     public PlayerDTO(int playerid, String firstname, String lastname, TeamDTO teamDTO) {
         this.playerid = playerid;
         this.firstname = firstname;
