@@ -2,45 +2,45 @@
 @main("Your fantasy teams", nav = "signup") {
     @for(tournament <- tournaments){
         <div class="row">
-            <div class="col-md-6">
-                <dl class="dl-horizontal">
-                    <dt>Tournament name</dt>
-                    <dd>@tournament.getTournamentName()</dd>
-                    <dt>Entry fee</dt>
-                    <dd>@tournament.getEntry_fee</dd>
+                <div class="col-md-4">
+                    <dl class="dl-horizontal">
+                        <dt>Tournament name</dt>
+                        <dd>@tournament.getTournamentName()</dd>
+                        <dt>Entry fee</dt>
+                        <dd>@tournament.getEntry_fee</dd>
 
-                    <dt>Start time</dt>
-                    <dd>@tournament.getStart_time<dd>
+                        <dt>Start time</dt>
+                        <dd>@tournament.getStart_time<dd>
 
-                    <dt>End time</dt>
-                    <dd>@tournament.getEnd_time</dd>
+                        <dt>End time</dt>
+                        <dd>@tournament.getEnd_time</dd>
 
-                    <dt>Max entries</dt>
-                    <dd>@tournament.getMaxentries</dd>
-                </dl>
-                <table class="table">
-
-                    <thead>
-                        <tr>
-                        <th>Player</th>
-                        <th>Position</th>
-                        <th>Team</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @for(player <- tournament.getAvailable_players) {
-                        <tr>
-                            <td>@player.getFirstname @player.getLastname</td>
-                            <td>@for(pos <- player.getPositions){
-                                @pos.getName
-                            }</td>
-                            <td>@player.getTeamDTO().getName</td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
-
-            </div>
+                        <dt>Max entries</dt>
+                        <dd>@tournament.getMaxentries</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                            <th>Player</th>
+                            <th>Position</th>
+                            <th>Team</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @for(player <- tournament.getAvailable_players) {
+                            <tr>
+                                <td>@player.getFirstname @player.getLastname</td>
+                                <td>@for(pos <- player.getPositions){
+                                    @pos.getName
+                                }</td>
+                                <td>@player.getTeamDTO().getName</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
         </div>
     }
 }
