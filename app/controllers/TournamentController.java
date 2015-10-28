@@ -25,7 +25,7 @@ import play.mvc.Result;
 import views.html.newtournament;
 import views.html.tournamentOver;
 import views.html.tournaments;
-import views.html.tournament;
+import views.html.tournamentDetails;
 
 import java.util.*;
 
@@ -71,8 +71,8 @@ public class TournamentController extends Controller {
     }
 
     /**
-     * Renders a form to create a new tournament.
-     * @return a create new tournament form.
+     * Renders a form to create a new tournamentDetails.
+     * @return a create new tournamentDetails form.
      */
     public Result blank() {
         List<Game> games = gameService.getGames();
@@ -80,9 +80,9 @@ public class TournamentController extends Controller {
     }
 
     /**
-     * Gets a specific tournament
-     * @param tournamentid the tournament to be returned
-     * @return a view containing details about the tournament
+     * Gets a specific tournamentDetails
+     * @param tournamentid the tournamentDetails to be returned
+     * @return a view containing details about the tournamentDetails
      */
     public Result getTournamentById(int tournamentid) {
 
@@ -90,7 +90,7 @@ public class TournamentController extends Controller {
         if (t == null) {
             return notFound();
         }
-        TournamentDTO tournamentDTO = new TournamentDTO(t.getEntryFee(), t.getMaxEntries(), t.getStartTime(), t.getEndTime());;
+        TournamentDTO tournamentDTO = new TournamentDTO(t.getEntryFee(), t.getMaxEntries(), t.getStartTime(), t.getEndTime(), t.getName());;
 
         List<Game> games = new ArrayList<Game>();
         for (Integer id : tournamentService.getTournamentGames(tournamentid)) {
@@ -102,7 +102,7 @@ public class TournamentController extends Controller {
             return redirect(routes.LoginController.blank());
         }
 
-        // Get the fantasy team if the user has already created a fantasy team for the current tournament
+        // Get the fantasy team if the user has already created a fantasy team for the current tournamentDetails
         List<PlayerDTO> fantasy_players = new ArrayList<PlayerDTO>();
         for (TournamentEnrollment te : t.getEnrollments()) {
             // Get the fantasy team for each enrollment
@@ -122,14 +122,14 @@ public class TournamentController extends Controller {
                 }
             }
         }
-        // If the user has not created a fantasy team for the tournament render a view to create a new fantasy team for
-        // the current tournament
+        // If the user has not created a fantasy team for the tournamentDetails render a view to create a new fantasy team for
+        // the current tournamentDetails
         if (fantasy_players.isEmpty()) {
             SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
-            return ok(tournament.render(t, games, null, available_players, fantasyTeamForm));
+            return ok(tournamentDetails.render(t, games, null, available_players, fantasyTeamForm));
         }
 
-        return ok(tournament.render(t, games, fantasy_players, null, fantasyTeamForm));
+        return ok(tournamentDetails.render(t, games, fantasy_players, null, fantasyTeamForm));
 
     }
 
@@ -140,13 +140,13 @@ public class TournamentController extends Controller {
     public Result addTournament() {
         Form<Tournament> filledForm = tournamentForm.bindFromRequest();
 
-        // Get the tournament details from the form
+        // Get the tournamentDetails details from the form
         String name, entry_fee, maxentries;
         name = filledForm.data().get("name");
         entry_fee = filledForm.data().get("entry_fee");
         maxentries = filledForm.data().get("maxentries");
 
-        // Get the games that the operator has picked for the tournament
+        // Get the games that the operator has picked for the tournamentDetails
         List<Integer> selected_gameids = new ArrayList<Integer>();
         int i = 0;
         String key = "tournamentGames[" + i + "]";
@@ -159,16 +159,16 @@ public class TournamentController extends Controller {
 
         // Validate form
         if (name == "") {
-            filledForm.reject("name", "Please provide a name for the tournament");
+            filledForm.reject("name", "Please provide a name for the tournamentDetails");
         }
         if (entry_fee == "") {
-            filledForm.reject("entry_fee", "Please fill out the entry fee for the tournament");
+            filledForm.reject("entry_fee", "Please fill out the entry fee for the tournamentDetails");
         }
         if (maxentries == "") {
-            filledForm.reject("maxentries", "Please provide max entries for the tournament");
+            filledForm.reject("maxentries", "Please provide max entries for the tournamentDetails");
         }
         if (selected_gameids.isEmpty()) {
-            filledForm.reject("tournamentGames[]", "Please select games for the tournament");
+            filledForm.reject("tournamentGames[]", "Please select games for the tournamentDetails");
         }
 
         if (filledForm.hasErrors()) {
@@ -176,13 +176,13 @@ public class TournamentController extends Controller {
             return badRequest(newtournament.render(tournamentForm, games));
         } else {
 
-            // Get the new tournament information
+            // Get the new tournamentDetails information
             Tournament newTournament = filledForm.get();
             newTournament.setEntryFee(Double.parseDouble(entry_fee));
             newTournament.setMaxEntries(Integer.parseInt(maxentries));
             newTournament.setStatus(true);
 
-            // Find the actual games the operator has selected and get the start time and end time for the tournament
+            // Find the actual games the operator has selected and get the start time and end time for the tournamentDetails
             // based on the games.
             List<Game> games = new ArrayList<Game>();
             Date first_game_date = null, last_game_date = null;
@@ -205,16 +205,16 @@ public class TournamentController extends Controller {
             newTournament.setEndTime(DateUtils.addHours(last_game_date, 2));
             int tournamentid = tournamentService.addTournament(newTournament);
 
-            // Get list of abailable players for the current tournament
+            // Get list of abailable players for the current tournamentDetails
             SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
 
-            return ok(tournament.render(newTournament, games, null, available_players, fantasyTeamForm));
+            return ok(tournamentDetails.render(newTournament, games, null, available_players, fantasyTeamForm));
         }
     }
 
     /**
-     * This method enrolls a user in a give tournament, the user provides his fantasy team that he/she has selected.
-     * @param tournamentid the id of the tournament
+     * This method enrolls a user in a give tournamentDetails, the user provides his fantasy team that he/she has selected.
+     * @param tournamentid the id of the tournamentDetails
      * @return a view containing the enrolled team
      */
     public Result enroll(int tournamentid) {
@@ -228,7 +228,7 @@ public class TournamentController extends Controller {
         SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
         if (filledForm.hasErrors()) {
             filledForm.reject("Bad request");
-            return badRequest(views.html.tournament.render(tournament,games, null, available_players,
+            return badRequest(views.html.tournamentDetails.render(tournament,games, null, available_players,
                     fantasyTeamForm));
         } else {
             FantasyTeamViewModel ftForm = filledForm.get();
@@ -236,7 +236,7 @@ public class TournamentController extends Controller {
             // Check if there are duplicates in the list
             Set<Integer> set = new HashSet<Integer>(fantasyTeamPlayers);
             if(set.size() < fantasyTeamPlayers.size()){
-                return badRequest(views.html.tournament.render(tournament,games, null, available_players,
+                return badRequest(views.html.tournamentDetails.render(tournament,games, null, available_players,
                         fantasyTeamForm));
             }
 

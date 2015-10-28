@@ -1,9 +1,11 @@
 @(tournaments: List[Models.TournamentDTO])
-@main("Hello", nav = "signup") {
+@main("Your fantasy teams", nav = "signup") {
     @for(tournament <- tournaments){
         <div class="row">
             <div class="col-md-6">
                 <dl class="dl-horizontal">
+                    <dt>Tournament name</dt>
+                    <dd>@tournament.getTournamentName()</dd>
                     <dt>Entry fee</dt>
                     <dd>@tournament.getEntry_fee</dd>
 
@@ -15,12 +17,17 @@
 
                     <dt>Max entries</dt>
                     <dd>@tournament.getMaxentries</dd>
-                    <dt>List of players in team</dt>
-                    @for(player <- tournament.getAvailable_players){
-                        <dt>Player name</dt>
-                        <dd>@player.getFirstname + @player.getLastname</dd>
-                    }
-                </dl>
+                    </dl>
+
+                    <h2>Your team</h2>
+                    <dl class="dl-horizontal">
+                        @for(player <- tournament.getAvailable_players){
+                            @for(pos <- player.getPositions){
+                                <dd>@pos.getName</dd>
+                            }
+                            <dd>@player.getFirstname @player.getLastname - @player.getTeamDTO().getName</dd>
+                        }
+                    </dl>
             </div>
         </div>
     }
