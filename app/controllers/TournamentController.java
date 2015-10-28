@@ -296,7 +296,7 @@ public class TournamentController extends Controller {
 
                 fantasyTeam.setIsOpen(false); // close the fantasy team
             }
-            tournament.setStatus(false); // close the tournament
+            tournamentService.closeTournament(tournamentid); // close the tournament
         }
 
         // If we did not findd a winner
