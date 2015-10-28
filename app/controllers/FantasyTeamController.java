@@ -6,7 +6,8 @@ import Models.TeamDTO;
 import Models.TournamentDTO;
 import is.rufan.player.domain.Player;
 import is.rufan.player.domain.Position;
-import is.rufan.player.service.FantasyPointService;
+import is.rufan.tournament.domain.TournamentEnrollment;
+import is.rufan.tournament.service.FantasyPoint.FantasyPointService;
 import is.rufan.player.service.PlayerService;
 import is.rufan.team.domain.Team;
 import is.rufan.team.service.GameService;
@@ -45,6 +46,7 @@ public class FantasyTeamController extends Controller {
     UserService userService;
     FantasyPointService fantasyPointService;
 
+
     public FantasyTeamController() {
         teamService = (TeamService) ctx.getBean("teamService");
         gameService = (GameService) ctx.getBean("gameService");
@@ -65,7 +67,6 @@ public class FantasyTeamController extends Controller {
         User user = userService.getUserByUsername(session().get("username"));
         List<FantasyTeam> teams = fantasyTeamService.getFantasyTeamByUserId(user.getId());
         List<TournamentDTO> tournaments = new ArrayList<TournamentDTO>();
-        double teamScoreSum = 0;
         for(Tournament tournament : tournamentService.getTournaments()) {
             List<FantasyTeam> fantasyTeams = tournamentService.getFantasyTeamsByTournamentId(tournament.getTournamentid());
             for (FantasyTeam t : fantasyTeams) {
@@ -80,11 +81,13 @@ public class FantasyTeamController extends Controller {
                         TeamDTO teamDTO = new TeamDTO(team.getDisplayName(), team.getAbbreviation());
                         PlayerDTO playerDTO = new PlayerDTO(player.getPlayerId(), player.getFirstName(), player.getLastName(), teamDTO, player.getPositions());
                         players.add(playerDTO);
-                        teamScoreSum += fantasyPointService.getFantasyPointByPlayerId(fp.getPlayerid()).getFantasyPoints();
                     }
                     tournamentDTO.setAvailable_players(players);
-                    tournamentDTO.setScore(teamScoreSum);
-                    teamScoreSum = 0;
+                    for(TournamentEnrollment te : tournament.getEnrollments()) {
+                        if (te.getTeamId() == t.getFantasyTeamId()) {
+                            tournamentDTO.setScore(te.getScore());
+                        }
+                    }
                     tournaments.add(tournamentDTO);
                 }
             }
