@@ -10,5 +10,6 @@
     <bean id="tournamentService" class="is.rufan.tournament.service.Tournament.TournamentServiceData"></bean>
     <bean id="fantasyTeamService" class="is.rufan.tournament.service.FantasyTeam.FantasyTeamServiceData"></bean>
     <bean id="fantasyPlayerService" class="is.rufan.tournament.service.FantasyPlayer.FantasyPlayerServiceData"></bean>
+    <bean id="fantasyPointService" class="is.rufan.tournament.service.FantasyPoint.FantasyPointServiceData"></bean>
 
 </beans>
