@@ -209,7 +209,7 @@ public class TournamentController extends Controller {
 
             if (newTournament.getMaxEntries() == 0) {
                 List<PlayerDTO> fantasy_players = new ArrayList<PlayerDTO>();
-                return ok(tournamentDetails.render(newTournament, games, fantasy_players, null, fantasyTeamForm));
+                return ok(tournaments.render(tournamentService.getActiveTournaments()));
             }
 
             // Get list of abailable players for the current tournamentDetails
@@ -235,7 +235,7 @@ public class TournamentController extends Controller {
         SelectPlayersDTO available_players = new TournamentHelper().getAvailablePlayers(tournamentid);
         if (filledForm.hasErrors()) {
             filledForm.reject("Bad request");
-            return badRequest(views.html.tournamentDetails.render(tournament,games, null, available_players,
+            return badRequest(views.html.tournamentDetails.render(tournament, games, null, available_players,
                     fantasyTeamForm));
         } else {
             FantasyTeamViewModel ftForm = filledForm.get();
@@ -243,7 +243,7 @@ public class TournamentController extends Controller {
             // Check if there are duplicates in the list
             Set<Integer> set = new HashSet<Integer>(fantasyTeamPlayers);
             if(set.size() < fantasyTeamPlayers.size()){
-                return badRequest(views.html.tournamentDetails.render(tournament,games, null, available_players,
+                return badRequest(views.html.tournamentDetails.render(tournament, games, null, available_players,
                         fantasyTeamForm));
             }
 
