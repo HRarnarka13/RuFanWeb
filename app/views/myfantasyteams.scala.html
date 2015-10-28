@@ -17,17 +17,29 @@
 
                     <dt>Max entries</dt>
                     <dd>@tournament.getMaxentries</dd>
-                    </dl>
+                </dl>
+                <table class="table">
 
-                    <h2>Your team</h2>
-                    <dl class="dl-horizontal">
-                        @for(player <- tournament.getAvailable_players){
-                            @for(pos <- player.getPositions){
-                                <dd>@pos.getName</dd>
-                            }
-                            <dd>@player.getFirstname @player.getLastname - @player.getTeamDTO().getName</dd>
-                        }
-                    </dl>
+                    <thead>
+                        <tr>
+                        <th>Player</th>
+                        <th>Position</th>
+                        <th>Team</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @for(player <- tournament.getAvailable_players) {
+                        <tr>
+                            <td>@player.getFirstname @player.getLastname</td>
+                            <td>@for(pos <- player.getPositions){
+                                @pos.getName
+                            }</td>
+                            <td>@player.getTeamDTO().getName</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+
             </div>
         </div>
     }
