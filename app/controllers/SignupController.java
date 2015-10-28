@@ -93,8 +93,6 @@ public class SignupController extends AccountController {
             session("username", created.getUsername());
             session("displayName", created.getName());
 
-
-
             // Get user favorite team
             Team fav_team = teamService.getTeamByAbbrivation(created.getFav_teamabb());
             return ok(profile.render(created, fav_team, teamService.getTeams(), updateForm));
